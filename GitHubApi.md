@@ -492,12 +492,231 @@ curl -H "Authorization: Bearer YOUR_TOKEN" \
   https://api.github.com/rate_limit
 ```
 
-### Рекомендации
+### Установка зависимостей для C#
 
-1. **Всегда проверяйте коды ответов** перед обработкой данных
-2. **Используйте условные запросы** с ETag для кэширования
-3. **Обрабатывайте ошибки 403** - возможно превышен лимит
-4. **Используйте пагинацию** для больших списков данных
-5. **Следите за rate limit** и реализуйте retry логику
+Для работы с JSON в .NET Framework 4.6.2 необходимо установить Newtonsoft.Json:
 
-Эта методичка покрывает основные операции с GitHub API для управления репозиториями и коллабораторами. Для более детальной информации обращайтесь к официальной документации GitHub API.
+**Package Manager Console:**
+```powershell
+Install-Package Newtonsoft.Json
+```
+
+**packages.config:**
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<packages>
+  <package id="Newtonsoft.Json" version="12.0.3" targetFramework="net462" />
+</packages>
+```
+
+### Обработка ошибок в C#
+
+```csharp
+public class GitHubApiException : Exception
+{
+    public HttpStatusCode StatusCode { get; }
+    public string ResponseContent { get; }
+    
+    public GitHubApiException(HttpStatusCode statusCode, string responseContent, string message) 
+        : base(message)
+    {
+        StatusCode = statusCode;
+        ResponseContent = responseContent;
+    }
+}
+
+// Улучшенная обработка ошибок
+public async Task<GitHubRepository> CreateRepositoryWithErrorHandlingAsync(string name, string description = "", bool isPrivate = false)
+{
+    var createRepoRequest = new
+    {
+        name = name,
+        description = description,
+        @private = isPrivate,
+        auto_init = true
+    };
+
+    var json = JsonConvert.SerializeObject(createRepoRequest);
+    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+    var response = await _httpClient.PostAsync(_baseUrl + "/user/repos", content);
+    var responseContent = await response.Content.ReadAsStringAsync();
+
+    switch (response.StatusCode)
+    {
+        case HttpStatusCode.Created:
+            return JsonConvert.DeserializeObject<GitHubRepository>(responseContent);
+        
+        case HttpStatusCode.Unauthorized:
+            throw new GitHubApiException(response.StatusCode, responseContent, "Неверный токен авторизации");
+        
+        case HttpStatusCode.Forbidden:
+            throw new GitHubApiException(response.StatusCode, responseContent, "Недостаточно прав или превышен лимит запросов");
+        
+        case HttpStatusCode.UnprocessableEntity:
+            throw new GitHubApiException(response.StatusCode, responseContent, "Репозиторий с таким именем уже существует");
+        
+        default:
+            throw new GitHubApiException(response.StatusCode, responseContent, 
+                string.Format("Неожиданная ошибка: {0}", response.StatusCode));
+    }
+}
+```
+
+### Пример приложения Console App
+
+```csharp
+using System;
+using System.Threading.Tasks;
+
+class Program
+{
+    private const string GITHUB_TOKEN = "YOUR_TOKEN_HERE";
+    
+    static void Main(string[] args)
+    {
+        // Для .NET Framework 4.6.2 используем GetAwaiter().GetResult()
+        MainAsync().GetAwaiter().GetResult();
+    }
+    
+    static async Task MainAsync()
+    {
+        var github = new GitHubAPI(GITHUB_TOKEN);
+        
+        try
+        {
+            Console.WriteLine("=== Тестирование GitHub API ===");
+            
+            // Создание репозитория
+            Console.Write("Введите название репозитория: ");
+            var repoName = Console.ReadLine();
+            
+            Console.Write("Приватный репозиторий? (y/N): ");
+            var isPrivateInput = Console.ReadLine();
+            var isPrivate = isPrivateInput.ToLower() == "y";
+            
+            Console.WriteLine("Создание репозитория...");
+            var repo = await github.CreateRepositoryAsync(repoName, "Тестовый репозиторий", isPrivate);
+            Console.WriteLine("Репозиторий создан: " + repo.HtmlUrl);
+            
+            // Управление коллабораторами
+            while (true)
+            {
+                Console.WriteLine("\nВыберите действие:");
+                Console.WriteLine("1. Добавить коллаборатора");
+                Console.WriteLine("2. Удалить коллаборатора");
+                Console.WriteLine("3. Показать коллабораторов");
+                Console.WriteLine("4. Изменить видимость репозитория");
+                Console.WriteLine("0. Выход");
+                
+                var choice = Console.ReadLine();
+                
+                switch (choice)
+                {
+                    case "1":
+                        await AddCollaboratorInteractive(github, "your-username", repoName);
+                        break;
+                    case "2":
+                        await RemoveCollaboratorInteractive(github, "your-username", repoName);
+                        break;
+                    case "3":
+                        await ShowCollaborators(github, "your-username", repoName);
+                        break;
+                    case "4":
+                        await ChangeVisibilityInteractive(github, "your-username", repoName);
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("Неверный выбор");
+                        break;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Ошибка: " + ex.Message);
+        }
+        finally
+        {
+            github.Dispose();
+        }
+    }
+    
+    static async Task AddCollaboratorInteractive(GitHubAPI github, string owner, string repo)
+    {
+        Console.Write("Имя пользователя коллаборатора: ");
+        var username = Console.ReadLine();
+        
+        Console.Write("Уровень доступа (pull/push/admin): ");
+        var permission = Console.ReadLine();
+        if (string.IsNullOrEmpty(permission)) permission = "push";
+        
+        var success = await github.AddCollaboratorAsync(owner, repo, username, permission);
+        if (success)
+            Console.WriteLine("Коллаборатор добавлен успешно");
+        else
+            Console.WriteLine("Ошибка добавления коллаборатора");
+    }
+    
+    static async Task RemoveCollaboratorInteractive(GitHubAPI github, string owner, string repo)
+    {
+        Console.Write("Имя пользователя для удаления: ");
+        var username = Console.ReadLine();
+        
+        var success = await github.RemoveCollaboratorAsync(owner, repo, username);
+        if (success)
+            Console.WriteLine("Коллаборатор удален успешно");
+        else
+            Console.WriteLine("Ошибка удаления коллаборатора");
+    }
+    
+    static async Task ShowCollaborators(GitHubAPI github, string owner, string repo)
+    {
+        var collaborators = await github.GetCollaboratorsAsync(owner, repo);
+        
+        if (collaborators.Count == 0)
+        {
+            Console.WriteLine("Коллабораторов нет");
+            return;
+        }
+        
+        Console.WriteLine("Список коллабораторов:");
+        foreach (var collab in collaborators)
+        {
+            var permissions = "";
+            if (collab.Permissions != null)
+            {
+                if (collab.Permissions.Admin) permissions = "admin";
+                else if (collab.Permissions.Push) permissions = "push";
+                else if (collab.Permissions.Pull) permissions = "pull";
+            }
+            
+            Console.WriteLine(string.Format("- {0} ({1})", collab.Login, permissions));
+        }
+    }
+    
+    static async Task ChangeVisibilityInteractive(GitHubAPI github, string owner, string repo)
+    {
+        Console.Write("Сделать приватным? (y/N): ");
+        var input = Console.ReadLine();
+        var makePrivate = input.ToLower() == "y";
+        
+        var success = await github.SetRepositoryVisibilityAsync(owner, repo, makePrivate);
+        if (success)
+            Console.WriteLine("Видимость изменена успешно");
+        else
+            Console.WriteLine("Ошибка изменения видимости");
+    }
+}
+```
+
+### Рекомендации для .NET Framework 4.6.2
+
+1. **Используйте HttpClient правильно** - создавайте один экземпляр и переиспользуйте
+2. **Не забывайте Dispose** - вызывайте Dispose() для HttpClient
+3. **Обрабатывайте исключения** - сетевые операции могут падать
+4. **Используйте ConfigureAwait(false)** в библиотечном коде для избежания deadlock
+5. **Проверяйте StatusCode** - не полагайтесь только на IsSuccessStatusCode
+6. **Логируйте ошибки** - сохраняйте детали ошибок для отладки
+
