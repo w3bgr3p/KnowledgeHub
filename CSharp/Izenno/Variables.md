@@ -35,7 +35,7 @@ project.Variables["UserName"].Value = "ivan_petrov";
 project.Variables["Age"].Value = "25";
 
 // Установка булевого значения
-project.Variables["IsLoggedIn"].Value = "true";
+project.Variables["IsLoggedIn"].Value = "True";
 
 // Установка текущей даты и времени
 project.Variables["CurrentDateTime"].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -112,9 +112,9 @@ project.Variables["EmailLower"].Value = email.ToLower();
 // Проверка на содержание подстроки
 string url = project.Variables["CurrentUrl"].Value;
 if (url.Contains("success")) {
-    project.Variables["IsSuccess"].Value = "true";
+    project.Variables["IsSuccess"].Value = "True";
 } else {
-    project.Variables["IsSuccess"].Value = "false";
+    project.Variables["IsSuccess"].Value = "False";
 }
 ```
 
@@ -123,24 +123,24 @@ if (url.Contains("success")) {
 ### Установка и проверка булевых переменных
 ```csharp
 // Установка булевого значения
-project.Variables["IsProcessed"].Value = "true";
-project.Variables["HasErrors"].Value = "false";
+project.Variables["IsProcessed"].Value = "True";
+project.Variables["HasErrors"].Value = "False";
 
 // Проверка булевого значения
 string isLoggedInStr = project.Variables["IsLoggedIn"].Value;
-bool isLoggedIn = isLoggedInStr == "true" || isLoggedInStr.ToLower() == "true";
+bool isLoggedIn = isLoggedInStr == "True" || isLoggedInStr.ToLower() == "True";
 
 if (isLoggedIn) {
     // Пользователь авторизован
     project.Variables["LastLoginTime"].Value = DateTime.Now.ToString();
 } else {
     // Необходима авторизация
-    project.Variables["LoginRequired"].Value = "true";
+    project.Variables["LoginRequired"].Value = "True";
 }
 
 // Переключение булевого значения
 string currentState = project.Variables["FeatureEnabled"].Value;
-bool isEnabled = currentState == "true";
+bool isEnabled = currentState == "True";
 project.Variables["FeatureEnabled"].Value = (!isEnabled).ToString().ToLower();
 ```
 
@@ -231,7 +231,7 @@ string discount = "0";
 
 if (userType == "premium") {
     discount = "15";
-} else if (userType == "regular" && isVip == "true") {
+} else if (userType == "regular" && isVip == "True") {
     discount = "10";
 } else if (userType == "regular") {
     discount = "5";
@@ -272,7 +272,7 @@ project.Variables["LoginAttempts"].Value = attempts.ToString();
 // Проверяем лимит
 int maxAttempts = 3;
 if (attempts >= maxAttempts) {
-    project.Variables["MaxAttemptsReached"].Value = "true";
+    project.Variables["MaxAttemptsReached"].Value = "True";
     project.SendWarningToLog($"Достигнуто максимальное количество попыток: {attempts}", false);
     
     // Прерываем выполнение
@@ -514,7 +514,7 @@ if (counter != null) {
         
         // Проверка лимита
         if (current >= 1000) {
-            project.GlobalVariables.SetVariable("Control", "StopProcessing", "true");
+            project.GlobalVariables.SetVariable("Control", "StopProcessing", "True");
         }
     }
 }
@@ -548,19 +548,19 @@ string response = ZennoPoster.HTTP.Request(
 ### Система глобальных флагов управления
 ```csharp
 // Инициализация флагов управления
-project.GlobalVariables.SetVariable("Control", "PauseAllThreads", "false");
-project.GlobalVariables.SetVariable("Control", "StopOnError", "false");
-project.GlobalVariables.SetVariable("Control", "MaintenanceMode", "false");
+project.GlobalVariables.SetVariable("Control", "PauseAllThreads", "False");
+project.GlobalVariables.SetVariable("Control", "StopOnError", "False");
+project.GlobalVariables.SetVariable("Control", "MaintenanceMode", "False");
 
 // Проверка флагов в каждом потоке
-string pauseFlag = project.GlobalVariables["Control", "PauseAllThreads"]?.Value?.ToString() ?? "false";
-if (pauseFlag == "true") {
+string pauseFlag = project.GlobalVariables["Control", "PauseAllThreads"]?.Value?.ToString() ?? "False";
+if (pauseFlag == "True") {
     project.SendInfoToLog("Поток приостановлен по глобальному флагу", false);
     
     // Ожидание снятия флага
-    while (pauseFlag == "true") {
+    while (pauseFlag == "True") {
         Thread.Sleep(5000);
-        pauseFlag = project.GlobalVariables["Control", "PauseAllThreads"]?.Value?.ToString() ?? "false";
+        pauseFlag = project.GlobalVariables["Control", "PauseAllThreads"]?.Value?.ToString() ?? "False";
     }
 }
 
@@ -569,7 +569,7 @@ try {
     // Критически важная операция
 } catch (Exception ex) {
     project.SendErrorToLog($"Критическая ошибка: {ex.Message}", true);
-    project.GlobalVariables.SetVariable("Control", "StopOnError", "true");
+    project.GlobalVariables.SetVariable("Control", "StopOnError", "True");
     
     // Прерывание выполнения
     ZennoPoster.SetTries(new Guid(project.TaskId), 0);
