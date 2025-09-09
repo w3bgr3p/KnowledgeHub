@@ -329,12 +329,12 @@ project.Variables["AllFieldsValid"].Value = allValid.ToString().ToLower();
 
 ### Избегание повторных обращений
 ```csharp
-// ❌ Плохо - много обращений к переменной
+// ❌ Плохо - два поиска в коллекции дороже создания ссылки
 if (project.Variables["Status"].Value == "processing") {
     project.SendInfoToLog($"Статус: {project.Variables["Status"].Value}", false);
 }
 
-// ✅ Хорошо - сохраняем в локальную переменную
+// ✅ Хорошо - один поиск + консистентность данных
 string status = project.Variables["Status"].Value;
 if (status == "processing") {
     project.SendInfoToLog($"Статус: {status}", false);
