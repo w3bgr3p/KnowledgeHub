@@ -37,7 +37,6 @@ var dmail = new DMail(project, "your_private_key", true);
 var dmail = new DMail(project);
 //проверить авторизацию
 dmail.CheckAuth();
-project.SendInfoToLog("Авторизация проверена");
 ```
 
 ### GetAll() : dynamic
