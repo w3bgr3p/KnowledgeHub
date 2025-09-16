@@ -1,6 +1,5 @@
 [SPOILER= Browser] 
 
-
 [SPOILER= BrowserScan]
 
 # BrowserScan
@@ -62,7 +61,6 @@ project.SendInfoToLog($"Оценка браузера: {score}");
 browserScan.FixTime();
 //автоматически настроить временную зону браузера
 [/CODE][/SPOILER]
-
 [SPOILER= Captcha]
 
 # Captcha
@@ -135,7 +133,6 @@ else
     project.SendErrorToLog("Ошибка при решении captcha через Cap.Guru");
 }
 [/CODE][/SPOILER]
-
 [SPOILER= ChromeExt]
 
 # Класс ChromeExt
@@ -231,7 +228,6 @@ else
   [/CODE]
 
 [/SPOILER]
-
 [SPOILER= Cookies]
 
 # Класс Cookies
@@ -332,7 +328,6 @@ else
       project.SendErrorToLog($"Ошибка установки cookies через JS: {ex.Message}", false);
   }
   [/CODE][/SPOILER]
-
 [SPOILER= Instance.Extentions]
 
 ## Класс InstanceExtensions
@@ -587,7 +582,6 @@ project.SendInfoToLog("Лишние вкладки закрыты", false);
 instance.CloseExtraTabs(tabToKeep: 2);
 project.SendInfoToLog("Оставлена 2-я вкладка", false);
 [/CODE][/SPOILER]
-
 [SPOILER= Traffic]
 
 # Traffic - Класс для работы с сетевым трафиком
