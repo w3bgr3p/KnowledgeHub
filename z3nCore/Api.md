@@ -62,8 +62,6 @@ string systemPrompt = "Ты помощник по программировани
 string userQuery = "Объясни что такое циклы в C#";
 
 string response = ai.Query(systemPrompt, userQuery, "deepseek-ai/DeepSeek-R1-0528");
-project.SendInfoToLog($"Ответ AI: {response}", false);
-
 [/CODE]
 
 **GenerateTweet(string content, string bio = "", bool log = false)**
@@ -89,8 +87,6 @@ string tweetContent = "Новости из мира криптовалют";
 string accountBio = "Криптоэнтузиаст и блокчейн-разработчик";
 
 string tweet = ai.GenerateTweet(tweetContent, accountBio);
-project.SendInfoToLog($"Сгенерирован твит: {tweet}", false);
-
 [/CODE]
 
 **OptimizeCode(string content, bool log = false)**
@@ -129,8 +125,6 @@ string optimizedCode = ai.OptimizeCode(originalCode, true);
 
 [CODE=csharp]
 string appealMessage = ai.GoogleAppeal();
-project.SendInfoToLog($"Обращение в Google: {appealMessage}", false);
-
 //отправить сообщение в форму поддержки
 
 [/CODE][/SPOILER]
