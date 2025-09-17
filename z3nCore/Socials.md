@@ -1,4 +1,4 @@
-[SPOILER= Socials] 
+[SPOILER= Socials]
 
 [SPOILER= Discord]
 
@@ -316,7 +316,7 @@ if (result == "ok")
 }
 else
 {
-    project.SendErrorToLog($"Ошибка авторизации: {result}");
+project.SendErrorToLog($"Ошибка авторизации: {result}");
 
 }
 [/CODE]
@@ -347,14 +347,14 @@ project.SendInfoToLog($"Текущее состояние: {currentState}");
 
 switch (currentState)
 {
-    case "ok":
-        break;
-    case "inputLogin":
-        break;
-    case "CAPTCHA":
-        project.SendWarningToLog("Обнаружена капча");
+case "ok":
+break;
+case "inputLogin":
+break;
+case "CAPTCHA":
+project.SendWarningToLog("Обнаружена капча");
 
-        break;
+break;
 }
 [/CODE]
 
@@ -382,7 +382,7 @@ if (authResult.Contains("SUCCESS"))
 }
 else
 {
-    project.SendErrorToLog($"Ошибка Google Auth: {authResult}");
+project.SendErrorToLog($"Ошибка Google Auth: {authResult}");
 
 }
 [/CODE]
@@ -443,7 +443,7 @@ google.ParseSecurity();
 
 var guild = new Guild(project, instance, true);
 
-// создание экземпляра Guild без логирования  
+// создание экземпляра Guild без логирования
 
 var guild = new Guild(project, instance);
 [/CODE]
@@ -540,12 +540,12 @@ var iconElement = instance.ActiveTab.FindElementByAttribute("div", "class", "ico
 string socialType = guild.Svg(iconElement);
 if (!string.IsNullOrEmpty(socialType))
 {
-    project.SendInfoToLog($"Найдена иконка: {socialType}");
+project.SendInfoToLog($"Найдена иконка: {socialType}");
 
 }
 else
 {
-    project.SendWarningToLog("Тип социальной сети не определен");
+project.SendWarningToLog("Тип социальной сети не определен");
 
 }
 [/CODE]
@@ -569,27 +569,27 @@ var connections = guild.ParseConnections();
 
 foreach (var connection in connections)
 {
-    string platform = connection.Key;     // тип платформы (discord, twitter и т.д.)
+string platform = connection.Key;     // тип платформы (discord, twitter и т.д.)
 
-    string status = connection.Value;     // статус ("none" если не подключено, или текст со статусом)
+string status = connection.Value;     // статус ("none" если не подключено, или текст со статусом)
 
-    
-    if (status == "none")
-    {
-        project.SendWarningToLog($"{platform} не подключен");
 
-    }
-    else
-    {
-        project.SendInfoToLog($"{platform}: {status}");
-    }
+if (status == "none")
+{
+project.SendWarningToLog($"{platform} не подключен");
+
+}
+else
+{
+project.SendInfoToLog($"{platform}: {status}");
+}
 }
 
 // проверка конкретной платформы
 
 if (connections.ContainsKey("discord"))
 {
-    project.SendInfoToLog($"Discord статус: {connections["discord"]}");
+project.SendInfoToLog($"Discord статус: {connections["discord"]}");
 
 }
 [/CODE]
@@ -611,19 +611,19 @@ var mainButton = guild.MainButton();
 
 if (mainButton != null)
 {
-    // проверка текста кнопки
+// проверка текста кнопки
 
-    string buttonText = mainButton.InnerText;
-    project.SendInfoToLog($"Текст кнопки: {buttonText}");
+string buttonText = mainButton.InnerText;
+project.SendInfoToLog($"Текст кнопки: {buttonText}");
 
-    
-    // клик по кнопке
 
-    mainButton.Click();
+// клик по кнопке
+
+mainButton.Click();
 }
 else
 {
-    project.SendErrorToLog("Главная кнопка не найдена");
+project.SendErrorToLog("Главная кнопка не найдена");
 
 }
 [/CODE][/SPOILER]
@@ -647,7 +647,7 @@ else
 
 - project - модель проекта ZennoPoster
 
-- instance - экземпляр браузера  
+- instance - экземпляр браузера
 
 - log - включить/выключить подробное логирование (по умолчанию false)
 
@@ -683,7 +683,7 @@ if (status == "ok")
 }
 else
 {
-    project.SendWarningToLog($"Проблема с аккаунтом: {status}", false);
+project.SendWarningToLog($"Проблема с аккаунтом: {status}", false);
 
 }
 [/CODE]
@@ -698,11 +698,11 @@ else
 [CODE=csharp]
 try
 {
-    x.Auth();
+x.Auth();
 }
 catch (Exception ex)
 {
-    project.SendErrorToLog($"Ошибка авторизации: {ex.Message}", false);
+project.SendErrorToLog($"Ошибка авторизации: {ex.Message}", false);
 
 }
 [/CODE]
@@ -738,9 +738,9 @@ project.SendInfoToLog($"Текущий этап авторизации: {current
 [CODE=csharp]
 var newData = new Dictionary<string, string>
 {
-    {"LOGIN", "newusername"},
-    {"PASSWORD", "newpassword"},
-    {"EMAIL", "new@email.com"}
+{"LOGIN", "newusername"},
+{"PASSWORD", "newpassword"},
+{"EMAIL", "new@email.com"}
 };
 x.UpdXCreds(newData);
 [/CODE]
@@ -764,6 +764,6 @@ x.ParseProfile();
 Пример:
 
 [CODE=csharp]
-x.ParseSecurity();  
+x.ParseSecurity();
 [/CODE][/SPOILER]
 [/SPOILER]

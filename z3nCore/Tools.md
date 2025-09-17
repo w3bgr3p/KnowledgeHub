@@ -1,4 +1,4 @@
-[SPOILER= Tools] 
+[SPOILER= Tools]
 
 [SPOILER= Accountant]
 
@@ -70,9 +70,9 @@ accountant.ShowBalanceTable("acc0,eth,btc,usdt");
 [CODE=csharp]
 var balances = new List<string>
 {
-    "wallet1:0.12345",
-    "wallet2:0.00123",
-    "wallet3:1.5678"
+"wallet1:0.12345",
+"wallet2:0.00123",
+"wallet3:1.5678"
 };
 //отобразить балансы из списка
 
@@ -146,12 +146,12 @@ string bech32ToHex = Converer.ConvertFormat(project, "init1qqqsyqcyq5rqwzqfpg9sc
 
 if (bech32ToHex != null)
 {
-    project.SendInfoToLog($"Bech32 в hex: {bech32ToHex}");
+project.SendInfoToLog($"Bech32 в hex: {bech32ToHex}");
 
 }
 else
 {
-    project.SendErrorToLog("Ошибка преобразования bech32");
+project.SendErrorToLog("Ошибка преобразования bech32");
 
 }
 [/CODE][/SPOILER]
@@ -236,11 +236,11 @@ var dataDict = forms.GetLinesByKey("email", "Введите email адреса")
 
 if (dataDict != null)
 {
-    foreach (var pair in dataDict)
-    {
-        project.SendInfoToLog($"Строка {pair.Key}: {pair.Value}");
+foreach (var pair in dataDict)
+{
+project.SendInfoToLog($"Строка {pair.Key}: {pair.Value}");
 
-    }
+}
 }
 [/CODE]
 
@@ -268,11 +268,11 @@ var lines = forms.GetLines("username", "Введите имена пользов
 
 if (lines != null)
 {
-    foreach (string line in lines)
-    {
-        project.SendInfoToLog($"Строка: {line}");
+foreach (string line in lines)
+{
+project.SendInfoToLog($"Строка: {line}");
 
-    }
+}
 }
 [/CODE]
 
@@ -310,11 +310,11 @@ var pairs = forms.GetKeyValuePairs(3, keyPlaceholders, valuePlaceholders, "Да�
 
 if (pairs != null)
 {
-    foreach (var pair in pairs)
-    {
-        project.SendInfoToLog($"Пара: {pair.Value}");
+foreach (var pair in pairs)
+{
+project.SendInfoToLog($"Пара: {pair.Value}");
 
-    }
+}
 }
 [/CODE]
 
@@ -352,11 +352,11 @@ var boolPairs = forms.GetKeyBoolPairs(3, options, labels, "Настройки");
 
 if (boolPairs != null)
 {
-    foreach (var pair in boolPairs)
-    {
-        project.SendInfoToLog($"Настройка {pair.Key}: {pair.Value}");
+foreach (var pair in boolPairs)
+{
+project.SendInfoToLog($"Настройка {pair.Key}: {pair.Value}");
 
-    }
+}
 }
 [/CODE]
 
@@ -384,11 +384,11 @@ if (boolPairs != null)
 [CODE=csharp]
 //получить пары как строку
 
-var pairsString = forms.GetKeyValueString(2, 
-    new List<string> { "name", "email" }, 
-    new List<string> { "Иван", "ivan@example.com" },
+var pairsString = forms.GetKeyValueString(2,
+new List<string> { "name", "email" },
+new List<string> { "Иван", "ivan@example.com" },
 
-    "Контактные данные");
+"Контактные данные");
 
 
 project.SendInfoToLog($"Пары: {pairsString}");
@@ -425,7 +425,7 @@ string selectedBrowser = forms.GetSelectedItem(browsers, "Выберите бр�
 
 if (!string.IsNullOrEmpty(selectedBrowser))
 {
-    project.SendInfoToLog($"Выбран браузер: {selectedBrowser}");
+project.SendInfoToLog($"Выбран браузер: {selectedBrowser}");
 
 }
 [/CODE][/SPOILER]
@@ -460,7 +460,7 @@ if (!string.IsNullOrEmpty(selectedBrowser))
 
 project.Help("Click");
 
-//вызов с диалогом ввода поискового запроса  
+//вызов с диалогом ввода поискового запроса
 
 project.Help();
 

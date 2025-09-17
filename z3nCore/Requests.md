@@ -1,4 +1,4 @@
-[SPOILER= Requests] 
+[SPOILER= Requests]
 
 [SPOILER= NetHttp]
 
@@ -186,7 +186,7 @@ project.SendInfoToLog("Удалено: " + response);
 bool isProxyWorking = httpClient.CheckProxy("192.168.1.1:8080");
 if (isProxyWorking) {
 } else {
-    project.SendWarningToLog("Прокси не работает");
+project.SendWarningToLog("Прокси не работает");
 
 }
 [/CODE]
@@ -212,7 +212,7 @@ if (isProxyWorking) {
 bool proxySet = httpClient.ProxySet(instance, "user:pass@192.168.1.1:8080");
 if (proxySet) {
 } else {
-    project.SendErrorToLog("Не удалось установить прокси");
+project.SendErrorToLog("Не удалось установить прокси");
 
 }
 [/CODE]
@@ -261,22 +261,22 @@ string response = project.GET("https://api.example.com/data");
 
 //запрос с прокси и логированием
 
-string response = project.GET("https://api.example.com/data", 
-    proxy: "192.168.1.1:8080", 
-    log: true);
+string response = project.GET("https://api.example.com/data",
+proxy: "192.168.1.1:8080",
+log: true);
 
 //запрос с заголовками и JSON-парсингом
 
 string[] headers = {"Authorization: Bearer token123"};
-string response = project.GET("https://api.example.com/user", 
-    headers: headers, 
-    parseJson: true);
+string response = project.GET("https://api.example.com/user",
+headers: headers,
+parseJson: true);
 
 //запрос с автоматическим прокси
 
-string response = project.GET("https://api.example.com/data", 
-    proxy: "+", 
-    deadline: 30);
+string response = project.GET("https://api.example.com/data",
+proxy: "+",
+deadline: 30);
 [/CODE]
 
 ### POST
@@ -316,18 +316,18 @@ string response = project.POST("https://api.example.com/create", jsonData);
 
 //POST с прокси и логированием
 
-string response = project.POST("https://api.example.com/update", 
-    body: jsonData,
-    proxy: "user:pass@192.168.1.1:8080",
-    log: true);
+string response = project.POST("https://api.example.com/update",
+body: jsonData,
+proxy: "user:pass@192.168.1.1:8080",
+log: true);
 
 //POST с заголовками авторизации
 
 string[] headers = {"Authorization: Bearer token123", "Content-Type: application/json"};
-string response = project.POST("https://api.example.com/secure", 
-    body: jsonData,
-    headers: headers,
-    parseJson: true);
+string response = project.POST("https://api.example.com/secure",
+body: jsonData,
+headers: headers,
+parseJson: true);
 [/CODE]
 
 ### SetProxy

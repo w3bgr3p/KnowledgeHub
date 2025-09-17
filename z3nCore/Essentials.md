@@ -1,4 +1,4 @@
-[SPOILER= Essentials] 
+[SPOILER= Essentials]
 
 [SPOILER= Cryptogarphy]
 
@@ -21,7 +21,7 @@
 
 - `phrase` (string) - текст для шифрования
 
-- `key` (string) - ключ для шифрования  
+- `key` (string) - ключ для шифрования
 
 - `hashKey` (bool) - если true, ключ будет хеширован через MD5 (по умолчанию true)
 
@@ -139,15 +139,15 @@ string bech32Addr = "init1qw508d6qejxtdg4y5r3zarvary0c5xw7k8a9xz2e";
 
 try
 {
-    //конвертируем Bech32 в HEX
+//конвертируем Bech32 в HEX
 
-    string hexAddr = Bech32.Bech32ToHex(bech32Addr);
-    project.SendInfoToLog($"HEX адрес: {hexAddr}");
+string hexAddr = Bech32.Bech32ToHex(bech32Addr);
+project.SendInfoToLog($"HEX адрес: {hexAddr}");
 
 }
 catch (Exception ex)
 {
-    project.SendErrorToLog($"Ошибка конвертации: {ex.Message}");
+project.SendErrorToLog($"Ошибка конвертации: {ex.Message}");
 
 }
 [/CODE]
@@ -173,21 +173,21 @@ string hexAddr = "0x1234567890abcdef1234567890abcdef12345678";
 
 try
 {
-    //конвертируем HEX в Bech32 с префиксом по умолчанию
+//конвертируем HEX в Bech32 с префиксом по умолчанию
 
-    string bech32Addr = Bech32.HexToBech32(hexAddr);
-    project.SendInfoToLog($"Bech32 адрес: {bech32Addr}");
+string bech32Addr = Bech32.HexToBech32(hexAddr);
+project.SendInfoToLog($"Bech32 адрес: {bech32Addr}");
 
-    
-    //можно указать свой префикс
 
-    string customAddr = Bech32.HexToBech32(hexAddr, "custom");
-    project.SendInfoToLog($"С префиксом custom: {customAddr}");
+//можно указать свой префикс
+
+string customAddr = Bech32.HexToBech32(hexAddr, "custom");
+project.SendInfoToLog($"С префиксом custom: {customAddr}");
 
 }
 catch (Exception ex)
 {
-    project.SendErrorToLog($"Ошибка конвертации: {ex.Message}");
+project.SendErrorToLog($"Ошибка конвертации: {ex.Message}");
 
 }
 [/CODE][/SPOILER]
@@ -207,34 +207,34 @@ catch (Exception ex)
 ### Init(IZennoPosterProjectModel project, Instance instance, bool log = false)
 - **Описание**: Создает экземпляр инициализатора с указанным проектом, экземпляром браузера и настройкой логирования.
 
-- **Параметры**: 
+- **Параметры**:
 
-  - `project` - модель проекта ZennoPoster
+- `project` - модель проекта ZennoPoster
 
-  - `instance` - экземпляр браузера
+- `instance` - экземпляр браузера
 
-  - `log` - включить/выключить подробное логирование (по умолчанию false)
+- `log` - включить/выключить подробное логирование (по умолчанию false)
 
 - **Пример**:
 
-  [CODE=csharp]
-  var init = new Init(project, instance, true);
-  [/CODE]
+[CODE=csharp]
+var init = new Init(project, instance, true);
+[/CODE]
 
 ### Init(IZennoPosterProjectModel project, bool log = false)
 - **Описание**: Создает экземпляр инициализатора только с проектом (без браузера).
 
 - **Параметры**:
 
-  - `project` - модель проекта ZennoPoster
+- `project` - модель проекта ZennoPoster
 
-  - `log` - включить/выключить подробное логирование
+- `log` - включить/выключить подробное логирование
 
 - **Пример**:
 
-  [CODE=csharp]
-  var init = new Init(project, false);
-  [/CODE]
+[CODE=csharp]
+var init = new Init(project, false);
+[/CODE]
 
 ## Публичные методы
 
@@ -244,52 +244,52 @@ catch (Exception ex)
 
 - **Параметры**:
 
-  - `author` - имя автора скрипта для отображения в логах
+- `author` - имя автора скрипта для отображения в логах
 
-  - `customQueries` - дополнительные SQL-запросы для выборки аккаунтов
+- `customQueries` - дополнительные SQL-запросы для выборки аккаунтов
 
-  - `log` - включить подробное логирование
+- `log` - включить подробное логирование
 
 - **Пример**:
 
-  [CODE=csharp]
-  string[] queries = { "SELECT id FROM accounts WHERE status = 'active'" };
-  init.InitProject("myusername", queries, true);
-  [/CODE]
+[CODE=csharp]
+string[] queries = { "SELECT id FROM accounts WHERE status = 'active'" };
+init.InitProject("myusername", queries, true);
+[/CODE]
 
 ### PrepareProject()
 - **Описание**: Подготавливает проект к выполнению - выбирает аккаунт для работы, проверяет фильтры (блокчейн, социальные сети) и настраивает экземпляр браузера.
 
 - **Пример**:
 
-  [CODE=csharp]
-  try 
-  {
-      init.PrepareProject();
-  }
-  catch (Exception ex)
-  {
-      project.SendErrorToLog($"Ошибка подготовки: {ex.Message}", false);
+[CODE=csharp]
+try
+{
+init.PrepareProject();
+}
+catch (Exception ex)
+{
+project.SendErrorToLog($"Ошибка подготовки: {ex.Message}", false);
 
-  }
-  [/CODE]
+}
+[/CODE]
 
 ### PrepareInstance()
 - **Описание**: Настраивает экземпляр браузера - запускает браузер, устанавливает прокси, загружает cookies и настраивает профиль.
 
 - **Пример**:
 
-  [CODE=csharp]
-  try
-  {
-      init.PrepareInstance();
-  }
-  catch (Exception ex)
-  {
-      project.SendErrorToLog($"Ошибка настройки браузера: {ex.Message}", false);
+[CODE=csharp]
+try
+{
+init.PrepareInstance();
+}
+catch (Exception ex)
+{
+project.SendErrorToLog($"Ошибка настройки браузера: {ex.Message}", false);
 
-  }
-  [/CODE]
+}
+[/CODE]
 
 ### LoadSocials(string requiredSocial)
 - **Возвращает**: string - список загруженных социальных сетей или "noBrowser" если браузер не запущен
@@ -298,19 +298,19 @@ catch (Exception ex)
 
 - **Пример**:
 
-  [CODE=csharp]
-  string result = init.LoadSocials("Google,Twitter,Discord");
-  if (result == "noBrowser")
-  {
-      project.SendWarningToLog("Браузер не запущен", false);
+[CODE=csharp]
+string result = init.LoadSocials("Google,Twitter,Discord");
+if (result == "noBrowser")
+{
+project.SendWarningToLog("Браузер не запущен", false);
 
-  }
-  else
-  {
-      project.SendInfoToLog($"Загружены соц.сети: {result}", false);
+}
+else
+{
+project.SendInfoToLog($"Загружены соц.сети: {result}", false);
 
-  }
-  [/CODE]
+}
+[/CODE]
 
 ### LoadWallets(string walletsToUse)
 - **Возвращает**: string - список загруженных кошельков или "noBrowser" если браузер не запущен
@@ -319,19 +319,19 @@ catch (Exception ex)
 
 - **Пример**:
 
-  [CODE=csharp]
-  string result = init.LoadWallets("Backpack,Zerion");
-  if (result == "noBrowser")
-  {
-      project.SendWarningToLog("Браузер не запущен для кошельков", false);
+[CODE=csharp]
+string result = init.LoadWallets("Backpack,Zerion");
+if (result == "noBrowser")
+{
+project.SendWarningToLog("Браузер не запущен для кошельков", false);
 
-  }
-  else
-  {
-      project.SendInfoToLog($"Кошельки подключены: {result}", false);
+}
+else
+{
+project.SendInfoToLog($"Кошельки подключены: {result}", false);
 
-  }
-  [/CODE]
+}
+[/CODE]
 
 ### RunProject(List<string> additionalVars = null, bool add = true)
 - **Возвращает**: bool - успешность выполнения проекта
@@ -340,24 +340,24 @@ catch (Exception ex)
 
 - **Параметры**:
 
-  - `additionalVars` - дополнительные переменные для передачи в скрипт
+- `additionalVars` - дополнительные переменные для передачи в скрипт
 
-  - `add` - добавить к стандартным переменным (true) или заменить их (false)
+- `add` - добавить к стандартным переменным (true) или заменить их (false)
 
 - **Пример**:
 
-  [CODE=csharp]
-  var extraVars = new List<string> { "customVariable", "mySpecialSetting" };
-  bool success = init.RunProject(extraVars, true);
-  if (success)
-  {
-  }
-  else
-  {
-      project.SendErrorToLog("Проект завершился с ошибкой", false);
+[CODE=csharp]
+var extraVars = new List<string> { "customVariable", "mySpecialSetting" };
+bool success = init.RunProject(extraVars, true);
+if (success)
+{
+}
+else
+{
+project.SendErrorToLog("Проект завершился с ошибкой", false);
 
-  }
-  [/CODE][/SPOILER]
+}
+[/CODE][/SPOILER]
 [SPOILER= ISAFU]
 
 # SAFU (Simple Authentication and Functional Utilities)
@@ -594,7 +594,7 @@ project.DbSet("_api", "tg_logger", "apikey, extra", "YOUR_BOT_TOKEN|CHAT_ID/TOPI
 
 - `acc` - показывать аккаунт
 
-- `port` - показывать порт инстанса  
+- `port` - показывать порт инстанса
 
 - `time` - показывать время выполнения
 

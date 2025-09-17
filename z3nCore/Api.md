@@ -1,4 +1,4 @@
-[SPOILER= Api] 
+[SPOILER= Api]
 
 [SPOILER= AiApi]
 
@@ -208,8 +208,8 @@ project.SendInfoToLog($"Результат вывода: {result}");
 var balances = binanceApi.GetUserAsset();
 foreach(var balance in balances)
 {
-    project.SendInfoToLog($"{balance.Key}: {balance.Value}");
-    //вывести баланс каждой монеты
+project.SendInfoToLog($"{balance.Key}: {balance.Value}");
+//вывести баланс каждой монеты
 
 }
 [/CODE]
@@ -249,9 +249,9 @@ project.SendInfoToLog($"Баланс USDT: {usdtBalance}");
 var history = binanceApi.GetWithdrawHistory();
 foreach(string withdrawal in history)
 {
-    project.SendInfoToLog($"Вывод: {withdrawal}");
+project.SendInfoToLog($"Вывод: {withdrawal}");
 
-    //показать каждую транзакцию
+//показать каждую транзакцию
 
 }
 [/CODE]
@@ -275,7 +275,7 @@ foreach(string withdrawal in history)
 string transaction = binanceApi.GetWithdrawHistory("12345");
 if(!transaction.Contains("NoIdFound"))
 {
-    project.SendInfoToLog($"Найдена транзакция: {transaction}");
+project.SendInfoToLog($"Найдена транзакция: {transaction}");
 
 }
 [/CODE][/SPOILER]
@@ -571,15 +571,15 @@ string text = project.Json.text;       // текст письма
 [CODE=csharp]
 try
 {
-    // получить код подтверждения
+// получить код подтверждения
 
-    string otpCode = firstMail.GetOTP("user@example.com");
-    project.SendInfoToLog($"Получен код: {otpCode}");
+string otpCode = firstMail.GetOTP("user@example.com");
+project.SendInfoToLog($"Получен код: {otpCode}");
 
 }
 catch (Exception ex)
 {
-    project.SendErrorToLog($"Ошибка получения кода: {ex.Message}");
+project.SendErrorToLog($"Ошибка получения кода: {ex.Message}");
 
 }
 [/CODE]
@@ -602,19 +602,19 @@ catch (Exception ex)
 [CODE=csharp]
 try
 {
-    // получить ссылку из письма
+// получить ссылку из письма
 
-    string link = firstMail.GetLink("user@example.com");
-    project.SendInfoToLog($"Найдена ссылка: {link}");
+string link = firstMail.GetLink("user@example.com");
+project.SendInfoToLog($"Найдена ссылка: {link}");
 
-    
-    // можно использовать ссылку для перехода
 
-    tab.Navigate(link);
+// можно использовать ссылку для перехода
+
+tab.Navigate(link);
 }
 catch (Exception ex)
 {
-    project.SendErrorToLog($"Ссылка не найдена: {ex.Message}");
+project.SendErrorToLog($"Ссылка не найдена: {ex.Message}");
 
 }
 [/CODE]
@@ -693,8 +693,8 @@ project.Json.FromString(allMessages);
 
 for (int i = 0; i < project.Json.messages.Count; i++)
 {
-    string subject = project.Json.messages[i].subject;
-    project.SendInfoToLog($"Письмо {i}: {subject}");
+string subject = project.Json.messages[i].subject;
+project.SendInfoToLog($"Письмо {i}: {subject}");
 
 }
 [/CODE][/SPOILER]
@@ -769,11 +769,11 @@ var completedRequirements = galxe.ParseTasks("reqComplete");
 
 foreach (var task in uncompletedTasks)
 {
-    project.SendInfoToLog($"Задание: {task.InnerText}");
+project.SendInfoToLog($"Задание: {task.InnerText}");
 
-    // кликнуть по заданию
+// кликнуть по заданию
 
-    task.Click();
+task.Click();
 }
 [/CODE]
 
@@ -804,20 +804,20 @@ string userInfo = galxe.BasicUserInfo(userToken, walletAddress);
 
 if (userInfo != null)
 {
-    project.Json.FromString(userInfo);
-    
-    // извлечь данные пользователя
+project.Json.FromString(userInfo);
 
-    string username = project.Json.data.addressInfo.username;
-    string userLevel = project.Json.data.addressInfo.userLevel.level.name;
-    int experience = project.Json.data.addressInfo.userLevel.exp;
-    
-    project.SendInfoToLog($"Пользователь: {username}, Уровень: {userLevel}, Опыт: {experience}");
+// извлечь данные пользователя
+
+string username = project.Json.data.addressInfo.username;
+string userLevel = project.Json.data.addressInfo.userLevel.level.name;
+int experience = project.Json.data.addressInfo.userLevel.exp;
+
+project.SendInfoToLog($"Пользователь: {username}, Уровень: {userLevel}, Опыт: {experience}");
 
 }
 else
 {
-    project.SendErrorToLog("Не удалось получить информацию о пользователе");
+project.SendErrorToLog("Не удалось получить информацию о пользователе");
 
 }
 [/CODE]
@@ -849,19 +849,19 @@ string loyaltyInfo = galxe.GetLoyaltyPoints(spaceAlias, walletAddress);
 
 if (loyaltyInfo != null)
 {
-    project.Json.FromString(loyaltyInfo);
-    
-    // извлечь данные об очках
+project.Json.FromString(loyaltyInfo);
 
-    int points = project.Json.data.space.addressLoyaltyPoints.points;
-    int rank = project.Json.data.space.addressLoyaltyPoints.rank;
-    
-    project.SendInfoToLog($"Очки лояльности: {points}, Ранг: {rank}");
+// извлечь данные об очках
+
+int points = project.Json.data.space.addressLoyaltyPoints.points;
+int rank = project.Json.data.space.addressLoyaltyPoints.rank;
+
+project.SendInfoToLog($"Очки лояльности: {points}, Ранг: {rank}");
 
 }
 else
 {
-    project.SendErrorToLog("Не удалось получить очки лояльности");
+project.SendErrorToLog("Не удалось получить очки лояльности");
 
 }
 [/CODE][/SPOILER]
@@ -884,7 +884,7 @@ else
 
 - `project` - проект ZennoPoster для работы с логами и переменными
 
-- `key` - ключ для операций (опционально)  
+- `key` - ключ для операций (опционально)
 
 - `log` - включить подробное логирование операций
 
@@ -941,12 +941,12 @@ string result = gazZip.Refuel("bsc", 0.005m, rpcUrl, true);
 
 if (result.StartsWith("fail:"))
 {
-    project.SendErrorToLog($"Ошибка: {result}");
+project.SendErrorToLog($"Ошибка: {result}");
 
 }
 else
 {
-    project.SendInfoToLog($"Успешно: {result}");
+project.SendInfoToLog($"Успешно: {result}");
 
 }
 [/CODE][/SPOILER]
@@ -1205,7 +1205,7 @@ var okx = new OkxApi(project, log: true);
 var subAccounts = okx.OKXGetSubAccs();
 foreach (string subName in subAccounts)
 {
-    project.SendInfoToLog($"Найден субсчет: {subName}");
+project.SendInfoToLog($"Найден субсчет: {subName}");
 
 }
 [/CODE]
@@ -1233,7 +1233,7 @@ foreach (string subName in subAccounts)
 var maxWithdrawals = okx.OKXGetSubMax("sub1");
 foreach (string balance in maxWithdrawals)
 {
-    project.SendInfoToLog($"Доступно для вывода: {balance}");
+project.SendInfoToLog($"Доступно для вывода: {balance}");
 
 }
 [/CODE]
@@ -1284,8 +1284,8 @@ var tradingBalances = okx.OKXGetSubTrading("sub1");
 var fundingBalances = okx.OKXGetSubFunding("sub1");
 foreach (string balance in fundingBalances)
 {
-    string[] parts = balance.Split(':');
-    project.SendInfoToLog($"Валюта: {parts[0]}, Баланс: {parts[1]}");
+string[] parts = balance.Split(':');
+project.SendInfoToLog($"Валюта: {parts[0]}, Баланс: {parts[1]}");
 
 }
 [/CODE]
@@ -1311,7 +1311,7 @@ foreach (string balance in fundingBalances)
 var allBalances = okx.OKXGetSubsBal(log: true);
 foreach (string balance in allBalances)
 {
-    project.SendInfoToLog($"Баланс: {balance}");
+project.SendInfoToLog($"Баланс: {balance}");
 
 }
 [/CODE]
@@ -1345,11 +1345,11 @@ foreach (string balance in allBalances)
 // Вывести 100 USDT на Ethereum
 
 okx.OKXWithdraw(
-    "0x1234567890abcdef1234567890abcdef12345678", 
-    "USDT", 
-    "ethereum", 
-    100m, 
-    1m
+"0x1234567890abcdef1234567890abcdef12345678",
+"USDT",
+"ethereum",
+100m,
+1m
 );
 [/CODE]
 
@@ -1567,9 +1567,9 @@ project.SendInfoToLog($"Декодированный результат: {result
 var holders = unlockApi.Holders("0x1234567890abcdef");
 foreach(var holder in holders)
 {
-    //вывести информацию о каждом держателе
+//вывести информацию о каждом держателе
 
-    project.SendInfoToLog($"Владелец: {holder.Key}, истекает: {holder.Value}");
+project.SendInfoToLog($"Владелец: {holder.Key}, истекает: {holder.Value}");
 
 }
 [/CODE][/SPOILER]

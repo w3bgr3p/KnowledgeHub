@@ -1,4 +1,4 @@
-[SPOILER= Sql] 
+[SPOILER= Sql]
 
 [SPOILER= Db]
 
@@ -127,9 +127,9 @@ string solKey = project.DbKey("sol");
 [CODE=csharp]
 var structure = new Dictionary<string, string>
 {
-    {"id", "INTEGER PRIMARY KEY"},
-    {"name", "TEXT DEFAULT ''"},
-    {"email", "TEXT DEFAULT ''"}
+{"id", "INTEGER PRIMARY KEY"},
+{"name", "TEXT DEFAULT ''"},
+{"email", "TEXT DEFAULT ''"}
 };
 project.TblAdd(structure, "users");
 [/CODE]
@@ -180,7 +180,7 @@ if (project.TblExist("users"))
 var columns = project.TblColumns("users");
 foreach(var column in columns)
 {
-    project.SendInfoToLog($"Колонка: {column}");
+project.SendInfoToLog($"Колонка: {column}");
 
 }
 [/CODE]
@@ -240,7 +240,7 @@ project.TblPrepareDefault(log: true);
 
 - `clmnName` (string) - название колонки ИЛИ
 
-- `columns` (string[]) - массив названий колонок ИЛИ  
+- `columns` (string[]) - массив названий колонок ИЛИ
 
 - `tableStructure` (Dictionary<string, string>) - структура колонок
 
@@ -287,7 +287,7 @@ project.ClmnAdd(newColumns, "users");
 
 if (!project.ClmnExist("email", "users"))
 {
-    project.ClmnAdd("email", "users");
+project.ClmnAdd("email", "users");
 }
 [/CODE]
 
@@ -624,10 +624,10 @@ int result = db.DbWrite("UPDATE accounts SET status = @status WHERE id = @userId
 [CODE=csharp]
 var db = new dSql("localhost", "5432", "shop", "user", "pass");
 var parameters = db.CreateParameters(
-    ("@productName", "Товар 1"),
+("@productName", "Товар 1"),
 
-    ("@price", 1250.50),
-    ("@categoryId", 5)
+("@price", 1250.50),
+("@categoryId", 5)
 );
 int result = db.DbWrite("INSERT INTO products (name, price, category_id) VALUES (@productName, @price, @categoryId)", parameters);
 [/CODE]
@@ -653,13 +653,13 @@ int result = db.DbWrite("INSERT INTO products (name, price, category_id) VALUES 
 var db = new dSql("localhost", "5432", "database", "user", "password");
 try
 {
-    int copiedRows = await db.CopyTableAsync("public.users", "public.users_backup");
-    project.SendInfoToLog($"Таблица скопирована, строк: {copiedRows}", false);
+int copiedRows = await db.CopyTableAsync("public.users", "public.users_backup");
+project.SendInfoToLog($"Таблица скопирована, строк: {copiedRows}", false);
 
 }
 catch (Exception ex)
 {
-    project.SendErrorToLog($"Ошибка копирования: {ex.Message}", false);
+project.SendErrorToLog($"Ошибка копирования: {ex.Message}", false);
 
 }
 [/CODE]
@@ -685,21 +685,21 @@ catch (Exception ex)
 var sqliteDb = new dSql(@"C:\old_data.sqlite", "");
 var postgresDb = new dSql("localhost", "5432", "newdb", "admin", "pass");
 
-try 
+try
 {
-    int totalRows = await dSql.MigrateAllTablesAsync(sqliteDb, postgresDb);
-    project.SendInfoToLog($"Миграция завершена, перенесено строк: {totalRows}", false);
+int totalRows = await dSql.MigrateAllTablesAsync(sqliteDb, postgresDb);
+project.SendInfoToLog($"Миграция завершена, перенесено строк: {totalRows}", false);
 
 }
 catch (Exception ex)
 {
-    project.SendErrorToLog($"Ошибка миграции: {ex.Message}", false);
+project.SendErrorToLog($"Ошибка миграции: {ex.Message}", false);
 
 }
 finally
 {
-    sqliteDb.Dispose();
-    postgresDb.Dispose();
+sqliteDb.Dispose();
+postgresDb.Dispose();
 }
 [/CODE]
 
