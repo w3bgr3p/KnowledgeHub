@@ -1,4 +1,4 @@
-[SPOILER= Wallets]
+[SPOILER= Wallets] 
 
 [SPOILER= BackpackWallet]
 
@@ -106,7 +106,7 @@ project.SendInfoToLog($"Текущий адрес: {address}");
 string chain = wallet.CurrentChain();
 //определить текущую сеть
 
-if (chain == "mainnet")
+if (chain == "mainnet") 
 {
 }
 [/CODE]
@@ -274,7 +274,7 @@ project.SendInfoToLog($"Текущий тип: {currentType}");
 
 - **project** (IZennoPosterProjectModel) - проект ZennoPoster
 
-- **instance** (Instance) - экземпляр браузера
+- **instance** (Instance) - экземпляр браузера  
 
 - **log** (bool) - включить логирование (по умолчанию false)
 
@@ -442,7 +442,7 @@ project.SendWarningToLog("Используется устаревший мето
 
 - **log** (bool) - включить логирование (по умолчанию false)
 
-- **key** (string) - ключ кошелька ("key", "seed" или прямое значение, по умолчанию "key")
+- **key** (string) - ключ кошелька ("key", "seed" или прямое значение, по умолчанию "key")  
 
 - **fileName** (string) - имя файла расширения (по умолчанию "Zerion1.21.3.crx")
 

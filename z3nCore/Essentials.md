@@ -1,4 +1,4 @@
-[SPOILER= Essentials]
+[SPOILER= Essentials] 
 
 [SPOILER= Cryptogarphy]
 
@@ -21,7 +21,7 @@
 
 - `phrase` (string) - текст для шифрования
 
-- `key` (string) - ключ для шифрования
+- `key` (string) - ключ для шифрования  
 
 - `hashKey` (bool) - если true, ключ будет хеширован через MD5 (по умолчанию true)
 
@@ -207,7 +207,7 @@ project.SendErrorToLog($"Ошибка конвертации: {ex.Message}");
 ### Init(IZennoPosterProjectModel project, Instance instance, bool log = false)
 - **Описание**: Создает экземпляр инициализатора с указанным проектом, экземпляром браузера и настройкой логирования.
 
-- **Параметры**:
+- **Параметры**: 
 
 - `project` - модель проекта ZennoPoster
 
@@ -263,7 +263,7 @@ init.InitProject("myusername", queries, true);
 - **Пример**:
 
 [CODE=csharp]
-try
+try 
 {
 init.PrepareProject();
 }
@@ -594,7 +594,7 @@ project.DbSet("_api", "tg_logger", "apikey, extra", "YOUR_BOT_TOKEN|CHAT_ID/TOPI
 
 - `acc` - показывать аккаунт
 
-- `port` - показывать порт инстанса
+- `port` - показывать порт инстанса  
 
 - `time` - показывать время выполнения
 

@@ -1,4 +1,4 @@
-[SPOILER= Socials]
+[SPOILER= Socials] 
 
 [SPOILER= Discord]
 
@@ -443,7 +443,7 @@ google.ParseSecurity();
 
 var guild = new Guild(project, instance, true);
 
-// создание экземпляра Guild без логирования
+// создание экземпляра Guild без логирования  
 
 var guild = new Guild(project, instance);
 [/CODE]
@@ -647,7 +647,7 @@ project.SendErrorToLog("Главная кнопка не найдена");
 
 - project - модель проекта ZennoPoster
 
-- instance - экземпляр браузера
+- instance - экземпляр браузера  
 
 - log - включить/выключить подробное логирование (по умолчанию false)
 
@@ -764,6 +764,6 @@ x.ParseProfile();
 Пример:
 
 [CODE=csharp]
-x.ParseSecurity();
+x.ParseSecurity();  
 [/CODE][/SPOILER]
 [/SPOILER]

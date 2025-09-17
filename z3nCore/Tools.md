@@ -1,4 +1,4 @@
-[SPOILER= Tools]
+[SPOILER= Tools] 
 
 [SPOILER= Accountant]
 
@@ -384,8 +384,8 @@ project.SendInfoToLog($"Настройка {pair.Key}: {pair.Value}");
 [CODE=csharp]
 //получить пары как строку
 
-var pairsString = forms.GetKeyValueString(2,
-new List<string> { "name", "email" },
+var pairsString = forms.GetKeyValueString(2, 
+new List<string> { "name", "email" }, 
 new List<string> { "Иван", "ivan@example.com" },
 
 "Контактные данные");
@@ -460,7 +460,7 @@ project.SendInfoToLog($"Выбран браузер: {selectedBrowser}");
 
 project.Help("Click");
 
-//вызов с диалогом ввода поискового запроса
+//вызов с диалогом ввода поискового запроса  
 
 project.Help();
 

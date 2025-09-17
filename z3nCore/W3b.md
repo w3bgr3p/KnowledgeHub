@@ -1,4 +1,4 @@
-[SPOILER= W3b]
+[SPOILER= W3b] 
 
 [SPOILER= Rpc]
 
@@ -61,7 +61,7 @@ project.SendErrorToLog($"Сеть не найдена: {ex.Message}", false);
 
 
 **Ethereum** - Ethereum mainnet RPC
-**Arbitrum** - Arbitrum One RPC
+**Arbitrum** - Arbitrum One RPC  
 **Base** - Base mainnet RPC
 **Blast** - Blast mainnet RPC
 **Bsc** - Binance Smart Chain RPC
@@ -311,7 +311,7 @@ project.SendInfoToLog($"NFT отправлена: {hash}");
 
 **WaitTxExtended(string rpc, string hash, int deadline = 60, string proxy = "", bool log = false)**
 
-Возвращает: bool - статус выполнения транзакции (true = успех, false = провал)
+Возвращает: bool - статус выполнения транзакции (true = успех, false = провал)  
 
 Описание: Расширенная версия ожидания транзакции с дополнительной информацией о gas и статусе. Отслеживает как завершенные транзакции, так и находящиеся в ожидании.
 
@@ -335,10 +335,10 @@ project.SendInfoToLog($"NFT отправлена: {hash}");
 var evmTools = new EvmTools();
 string transactionHash = "0x123abc...";
 bool success = await evmTools.WaitTxExtended("https://rpc.ankr.com/eth", transactionHash, 120, "", true);
-if (success)
+if (success) 
 {
-}
-else
+} 
+else 
 {
 project.SendWarningToLog("Транзакция провалилась", false);
 
@@ -347,7 +347,7 @@ project.SendWarningToLog("Транзакция провалилась", false);
 
 **WaitTx(string rpc, string hash, int deadline = 60, string proxy = "", bool log = false)**
 
-Возвращает: bool - статус выполнения транзакции
+Возвращает: bool - статус выполнения транзакции  
 
 Описание: Базовая версия ожидания подтверждения транзакции в блокчейне. Проверяет статус транзакции до ее завершения или истечения времени.
 
@@ -376,7 +376,7 @@ bool result = await evmTools.WaitTx("https://bsc-dataseed.binance.org", "0xabc12
 
 **Native(string rpc, string address)**
 
-Возвращает: string - баланс в hex-формате
+Возвращает: string - баланс в hex-формате  
 
 Описание: Получает баланс нативной криптовалюты (ETH, BNB, MATIC и т.д.) для указанного адреса.
 
@@ -402,7 +402,7 @@ project.SendInfoToLog($"Баланс: {balance} MATIC", false);
 
 **Erc20(string tokenContract, string rpc, string address)**
 
-Возвращает: string - баланс токена в hex-формате
+Возвращает: string - баланс токена в hex-формате  
 
 Описание: Получает баланс ERC-20 токена для указанного адреса кошелька.
 
@@ -420,7 +420,7 @@ project.SendInfoToLog($"Баланс: {balance} MATIC", false);
 
 [CODE=csharp]
 var evmTools = new EvmTools();
-string usdcContract = "0xA0b86a33E6..";
+string usdcContract = "0xA0b86a33E6.."; 
 string balance = await evmTools.Erc20(usdcContract, "https://mainnet.infura.io/v3/key", "0x123...");
 //конвертировать в readable формат
 
@@ -432,7 +432,7 @@ project.SendInfoToLog($"Баланс USDC: {readableBalance}", false);
 
 **Erc721(string tokenContract, string rpc, string address)**
 
-Возвращает: string - количество NFT в hex-формате
+Возвращает: string - количество NFT в hex-формате  
 
 Описание: Получает количество NFT-токенов стандарта ERC-721, принадлежащих указанному адресу.
 
@@ -459,7 +459,7 @@ project.SendInfoToLog($"У адреса {nftCount} NFT", false);
 
 **Erc1155(string tokenContract, string tokenId, string rpc, string address)**
 
-Возвращает: string - баланс токена ERC-1155 в hex-формате
+Возвращает: string - баланс токена ERC-1155 в hex-формате  
 
 Описание: Получает баланс конкретного токена стандарта ERC-1155 для указанного адреса.
 
@@ -490,7 +490,7 @@ project.SendInfoToLog($"Игровых предметов: {itemCount}", false);
 
 **Nonce(string rpc, string address, string proxy = "", bool log = false)**
 
-Возвращает: string - nonce в hex-формате
+Возвращает: string - nonce в hex-формате  
 
 Описание: Получает nonce (счетчик транзакций) для указанного адреса. Используется при создании новых транзакций.
 
@@ -518,7 +518,7 @@ project.SendInfoToLog($"Текущий nonce: {currentNonce}", false);
 
 **ChainId(string rpc, string proxy = "", bool log = false)**
 
-Возвращает: string - ID блокчейна в hex-формате
+Возвращает: string - ID блокчейна в hex-формате  
 
 Описание: Получает уникальный идентификатор блокчейна для указанного RPC-узла.
 
@@ -544,7 +544,7 @@ project.SendInfoToLog($"Chain ID: {chainId}", false);
 
 **GasPrice(string rpc, string proxy = "", bool log = false)**
 
-Возвращает: string - цена gas в hex-формате
+Возвращает: string - цена gas в hex-формате  
 
 Описание: Получает текущую цену gas в блокчейне для оптимизации стоимости транзакций.
 
@@ -582,7 +582,7 @@ project.SendInfoToLog($"Текущая цена gas: {gasPrice} Gwei", false);
 
 **GetSolanaBalance(string rpc, string address)**
 
-Возвращает: decimal - баланс SOL
+Возвращает: decimal - баланс SOL  
 
 Описание: Получает баланс нативной валюты SOL для указанного адреса кошелька.
 
@@ -605,7 +605,7 @@ project.SendInfoToLog($"Баланс SOL: {solBalance}", false);
 
 **GetSplTokenBalance(string rpc, string walletAddress, string tokenMint)**
 
-Возвращает: decimal - баланс SPL-токена
+Возвращает: decimal - баланс SPL-токена  
 
 Описание: Получает баланс конкретного SPL-токена для указанного кошелька в блокчейне Solana.
 
@@ -631,7 +631,7 @@ project.SendInfoToLog($"Баланс USDC: {usdcBalance}", false);
 
 **SolFeeByTx(string transactionHash, string rpc = null, string tokenDecimal = "9")**
 
-Возвращает: decimal - размер комиссии в SOL
+Возвращает: decimal - размер комиссии в SOL  
 
 Описание: Рассчитывает комиссию, уплаченную за конкретную транзакцию в сети Solana.
 
@@ -668,7 +668,7 @@ project.SendInfoToLog($"Комиссия за транзакцию: {fee} SOL", 
 
 **GetAptBalance(string rpc, string address, string proxy = "", bool log = false)**
 
-Возвращает: decimal - баланс APT
+Возвращает: decimal - баланс APT  
 
 Описание: Получает баланс нативной валюты APT для указанного адреса в блокчейне Aptos.
 
@@ -695,7 +695,7 @@ project.SendInfoToLog($"Баланс APT: {aptBalance}", false);
 
 **GetAptTokenBalance(string coinType, string rpc, string address, string proxy = "", bool log = false)**
 
-Возвращает: decimal - баланс токена
+Возвращает: decimal - баланс токена  
 
 Описание: Получает баланс конкретного токена в экосистеме Aptos по его типу.
 
@@ -737,7 +737,7 @@ project.SendInfoToLog($"Баланс токена: {tokenBalance}", false);
 
 **GetSuiBalance(string rpc, string address, string proxy = "", bool log = false)**
 
-Возвращает: decimal - баланс SUI
+Возвращает: decimal - баланс SUI  
 
 Описание: Получает баланс нативной валюты SUI для указанного адреса кошелька.
 
@@ -764,7 +764,7 @@ project.SendInfoToLog($"Баланс SUI: {suiBalance}", false);
 
 **GetSuiTokenBalance(string coinType, string rpc, string address, string proxy = "", bool log = false)**
 
-Возвращает: decimal - баланс токена
+Возвращает: decimal - баланс токена  
 
 Описание: Получает баланс конкретного токена в экосистеме Sui по его типу.
 
@@ -805,7 +805,7 @@ API-клиент для работы с сервисом CoinGecko. Позвол
 
 **CoinInfo(string CGid = "ethereum")**
 
-Возвращает: string - JSON с полной информацией о монете
+Возвращает: string - JSON с полной информацией о монете  
 
 Описание: Получает подробную информацию о криптовалюте по ее ID в CoinGecko.
 
@@ -826,7 +826,7 @@ project.SendInfoToLog($"Информация об Ethereum: {ethInfo}", false);
 
 **TokenByAddress(string CGid = "ethereum")**
 
-Возвращает: string - JSON с информацией о токене по адресу
+Возвращает: string - JSON с информацией о токене по адресу  
 
 Описание: Получает информацию о токене по его контрактному адресу в блокчейне.
 
@@ -847,7 +847,7 @@ string tokenInfo = await coinGecko.TokenByAddress("ethereum");
 
 **PriceByTiker(string tiker)**
 
-Возвращает: decimal - цена в USD
+Возвращает: decimal - цена в USD  
 
 Описание: Статический метод для быстрого получения цены криптовалюты по ее тикеру. Поддерживает ETH, BNB, SOL.
 
@@ -867,7 +867,7 @@ project.SendInfoToLog($"ETH: ${ethPrice}, BNB: ${bnbPrice}", false);
 
 **PriceById(string CGid = "ethereum")**
 
-Возвращает: decimal - цена в USD
+Возвращает: decimal - цена в USD  
 
 Описание: Статический метод для получения цены криптовалюты по ее ID в CoinGecko.
 
@@ -898,7 +898,7 @@ API-клиент для работы с сервисом DexScreener. Предо
 
 **CoinInfo(string contract, string chain)**
 
-Возвращает: string - JSON с информацией о токене
+Возвращает: string - JSON с информацией о токене  
 
 Описание: Получает информацию о токене по его контрактному адресу и блокчейну от DexScreener.
 
@@ -933,7 +933,7 @@ API-клиент для работы с биржей KuCoin. Позволяет 
 
 **OrderbookByTiker(string ticker = "ETH")**
 
-Возвращает: string - JSON с данными ордербука
+Возвращает: string - JSON с данными ордербука  
 
 Описание: Получает данные ордербука (лучшие цены покупки и продажи) для торговой пары с USDT.
 
@@ -954,7 +954,7 @@ project.SendInfoToLog($"Ордербук BTC: {btcOrderbook}", false);
 
 **KuPrice(string tiker = "ETH")**
 
-Возвращает: decimal - цена в USDT
+Возвращает: decimal - цена в USDT  
 
 Описание: Статический метод для быстрого получения текущей цены торговой пары на KuCoin.
 
@@ -985,7 +985,7 @@ project.SendInfoToLog($"ADA: ${adaPrice}, LINK: ${linkPrice}", false);
 
 **EvmNative(string rpc, string address)**
 
-Возвращает: decimal - баланс в читаемом формате
+Возвращает: decimal - баланс в читаемом формате  
 
 Описание: Статический метод для получения баланса нативной валюты EVM-блокчейна с автоматическим преобразованием в decimal.
 
@@ -1007,7 +1007,7 @@ project.SendInfoToLog($"ETH: {ethBalance}, BNB: {bnbBalance}", false);
 
 **ERC20(string tokenContract, string rpc, string address, string tokenDecimal = "18")**
 
-Возвращает: decimal - баланс токена
+Возвращает: decimal - баланс токена  
 
 Описание: Упрощенный метод для получения баланса ERC-20 токена с автоматическим преобразованием в читаемый формат.
 
@@ -1034,7 +1034,7 @@ project.SendInfoToLog($"Баланс USDT: {usdtBalance}", false);
 
 **WaitTx(string rpc, string hash, int deadline = 60, string proxy = "", bool log = false, bool extended = false)**
 
-Возвращает: bool - статус транзакции
+Возвращает: bool - статус транзакции  
 
 Описание: Упрощенный метод ожидания подтверждения транзакции с выбором базовой или расширенной версии.
 
@@ -1064,7 +1064,7 @@ bool success = W3bTools.WaitTx("https://polygon-rpc.com", "0xabc123...", 120, ""
 
 **SolNative(string address, string rpc = "https://api.mainnet-beta.solana.com")**
 
-Возвращает: decimal - баланс SOL
+Возвращает: decimal - баланс SOL  
 
 Описание: Упрощенный метод для получения баланса SOL.
 
@@ -1086,7 +1086,7 @@ project.SendInfoToLog($"Баланс SOL: {solBalance}", false);
 
 **CGPrice(string CGid = "ethereum")**
 
-Возвращает: decimal - цена в USD
+Возвращает: decimal - цена в USD  
 
 Описание: Упрощенный метод для получения цены криптовалюты через CoinGecko API.
 
@@ -1106,7 +1106,7 @@ project.SendInfoToLog($"BTC: ${btcPrice}, ETH: ${ethPrice}", false);
 
 **UsdToToken(decimal usdAmount, string tiker, string apiProvider = "KuCoin")**
 
-Возвращает: decimal - количество токенов
+Возвращает: decimal - количество токенов  
 
 Описание: Конвертирует сумму в USD в количество токенов по текущему курсу через выбранный API.
 

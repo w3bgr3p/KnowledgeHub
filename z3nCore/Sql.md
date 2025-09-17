@@ -1,4 +1,4 @@
-[SPOILER= Sql]
+[SPOILER= Sql] 
 
 [SPOILER= Db]
 
@@ -240,7 +240,7 @@ project.TblPrepareDefault(log: true);
 
 - `clmnName` (string) - название колонки ИЛИ
 
-- `columns` (string[]) - массив названий колонок ИЛИ
+- `columns` (string[]) - массив названий колонок ИЛИ  
 
 - `tableStructure` (Dictionary<string, string>) - структура колонок
 
@@ -685,7 +685,7 @@ project.SendErrorToLog($"Ошибка копирования: {ex.Message}", fal
 var sqliteDb = new dSql(@"C:\old_data.sqlite", "");
 var postgresDb = new dSql("localhost", "5432", "newdb", "admin", "pass");
 
-try
+try 
 {
 int totalRows = await dSql.MigrateAllTablesAsync(sqliteDb, postgresDb);
 project.SendInfoToLog($"Миграция завершена, перенесено строк: {totalRows}", false);

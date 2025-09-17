@@ -1,4 +1,4 @@
-[SPOILER= Requests]
+[SPOILER= Requests] 
 
 [SPOILER= NetHttp]
 
@@ -261,21 +261,21 @@ string response = project.GET("https://api.example.com/data");
 
 //запрос с прокси и логированием
 
-string response = project.GET("https://api.example.com/data",
-proxy: "192.168.1.1:8080",
+string response = project.GET("https://api.example.com/data", 
+proxy: "192.168.1.1:8080", 
 log: true);
 
 //запрос с заголовками и JSON-парсингом
 
 string[] headers = {"Authorization: Bearer token123"};
-string response = project.GET("https://api.example.com/user",
-headers: headers,
+string response = project.GET("https://api.example.com/user", 
+headers: headers, 
 parseJson: true);
 
 //запрос с автоматическим прокси
 
-string response = project.GET("https://api.example.com/data",
-proxy: "+",
+string response = project.GET("https://api.example.com/data", 
+proxy: "+", 
 deadline: 30);
 [/CODE]
 
@@ -316,7 +316,7 @@ string response = project.POST("https://api.example.com/create", jsonData);
 
 //POST с прокси и логированием
 
-string response = project.POST("https://api.example.com/update",
+string response = project.POST("https://api.example.com/update", 
 body: jsonData,
 proxy: "user:pass@192.168.1.1:8080",
 log: true);
@@ -324,7 +324,7 @@ log: true);
 //POST с заголовками авторизации
 
 string[] headers = {"Authorization: Bearer token123", "Content-Type: application/json"};
-string response = project.POST("https://api.example.com/secure",
+string response = project.POST("https://api.example.com/secure", 
 body: jsonData,
 headers: headers,
 parseJson: true);

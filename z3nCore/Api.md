@@ -1,4 +1,4 @@
-[SPOILER= Api]
+[SPOILER= Api] 
 
 [SPOILER= AiApi]
 
@@ -884,7 +884,7 @@ project.SendErrorToLog("Не удалось получить очки лояль
 
 - `project` - проект ZennoPoster для работы с логами и переменными
 
-- `key` - ключ для операций (опционально)
+- `key` - ключ для операций (опционально)  
 
 - `log` - включить подробное логирование операций
 
@@ -1345,10 +1345,10 @@ project.SendInfoToLog($"Баланс: {balance}");
 // Вывести 100 USDT на Ethereum
 
 okx.OKXWithdraw(
-"0x1234567890abcdef1234567890abcdef12345678",
-"USDT",
-"ethereum",
-100m,
+"0x1234567890abcdef1234567890abcdef12345678", 
+"USDT", 
+"ethereum", 
+100m, 
 1m
 );
 [/CODE]
