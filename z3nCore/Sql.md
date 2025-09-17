@@ -25,9 +25,11 @@
 **Пример использования:**
 [CODE=csharp]
 //получить статус текущей записи
+
 string status = project.DbGet("status");
 
 //получить email по конкретному ID
+
 string email = project.DbGet("email", "users", key: "user_id", acc: "123");
 [/CODE]
 
@@ -47,9 +49,11 @@ string email = project.DbGet("email", "users", key: "user_id", acc: "123");
 **Пример использования:**
 [CODE=csharp]
 //обновить статус текущей записи
+
 project.DbUpd("status='completed'");
 
 //обновить несколько полей без автоматического last
+
 project.DbUpd("email='test@test.com', phone='+123456'", last: false);
 [/CODE]
 
@@ -64,9 +68,11 @@ project.DbUpd("email='test@test.com', phone='+123456'", last: false);
 **Пример использования:**
 [CODE=csharp]
 //получить приватный ключ для EVM сетей
+
 string evmKey = project.DbKey("evm");
 
 //получить приватный ключ для Solana
+
 string solKey = project.DbKey("sol");
 [/CODE]
 
@@ -103,6 +109,7 @@ project.TblAdd(structure, "users");
 **Пример использования:**
 [CODE=csharp]
 //проверить существование таблицы
+
 if (project.TblExist("users"))
 {
 }
@@ -120,6 +127,7 @@ if (project.TblExist("users"))
 **Пример использования:**
 [CODE=csharp]
 //получить список колонок
+
 var columns = project.TblColumns("users");
 foreach(var column in columns)
 {
@@ -139,9 +147,11 @@ foreach(var column in columns)
 **Пример использования:**
 [CODE=csharp]
 //создать структуру с базовыми колонками
+
 var structure = project.TblForProject();
 
 //добавить дополнительные колонки
+
 var customColumns = new List<string> {"email", "phone", "address"};
 var extendedStructure = project.TblForProject(customColumns);
 [/CODE]
@@ -155,6 +165,7 @@ var extendedStructure = project.TblForProject(customColumns);
 **Пример использования:**
 [CODE=csharp]
 //подготовить таблицу проекта со всеми необходимыми полями
+
 project.TblPrepareDefault(log: true);
 [/CODE]
 
@@ -174,9 +185,11 @@ project.TblPrepareDefault(log: true);
 **Пример использования:**
 [CODE=csharp]
 //добавить одну колонку
+
 project.ClmnAdd("phone", "users");
 
 //добавить несколько колонок
+
 string[] newColumns = {"phone", "address", "city"};
 project.ClmnAdd(newColumns, "users");
 [/CODE]
@@ -194,6 +207,7 @@ project.ClmnAdd(newColumns, "users");
 **Пример использования:**
 [CODE=csharp]
 //проверить наличие колонки перед использованием
+
 if (!project.ClmnExist("email", "users"))
 {
     project.ClmnAdd("email", "users");
@@ -212,6 +226,7 @@ if (!project.ClmnExist("email", "users"))
 **Пример использования:**
 [CODE=csharp]
 //удалить одну колонку
+
 project.ClmnDrop("old_column", "users");
 [/CODE]
 
@@ -227,6 +242,7 @@ project.ClmnDrop("old_column", "users");
 **Пример использования:**
 [CODE=csharp]
 //мигрировать данные между таблицами
+
 project.MigrateTable("old_accounts", "new_accounts");
 [/CODE]
 
@@ -241,9 +257,11 @@ project.MigrateTable("old_accounts", "new_accounts");
 **Пример использования:**
 [CODE=csharp]
 //заполнить таблицу записями до ID 100
+
 project.AddRange("accounts", 100);
 
 //использовать значение из переменной rangeEnd
+
 project.AddRange("accounts");
 [/CODE]
 
@@ -257,9 +275,11 @@ project.AddRange("accounts");
 **Пример использования:**
 [CODE=csharp]
 //загрузить все настройки из базы в переменные проекта
+
 project.DbSettings(log: true);
 
 //только прочитать настройки без установки переменных
+
 project.DbSettings(set: false);
 [/CODE]
 
@@ -419,6 +439,7 @@ var db = new dSql(@"C:\test.sqlite", "");
 var param1 = db.CreateParameter("@userId", 123);
 var param2 = db.CreateParameter("@status", "active");
 //использование параметров в запросе
+
 int result = db.DbWrite("UPDATE accounts SET status = @status WHERE id = @userId", param1, param2);
 [/CODE]
 
@@ -536,6 +557,7 @@ string userName = await db.Get("username", "123", "users");
 project.SendInfoToLog($"Имя пользователя: {userName}", false);
 
 //с дополнительным условием
+
 string email = await db.Get("email", "", "users", "username = 'admin' AND active = 1");
 [/CODE]
 

@@ -21,6 +21,7 @@
 [CODE=csharp]
 var browserScan = new BrowserScan(project, instance, true);
 //создать объект для работы с BrowserScan с включенным логированием
+
 [/CODE]
 
 ## Методы
@@ -35,6 +36,7 @@ var browserScan = new BrowserScan(project, instance, true);
 [CODE=csharp]
 browserScan.ParseStats();
 //проанализировать и сохранить все характеристики браузера
+
 [/CODE]
 
 ### GetScore()
@@ -48,6 +50,7 @@ browserScan.ParseStats();
 string score = browserScan.GetScore();
 project.SendInfoToLog($"Оценка браузера: {score}");
 //получить оценку анонимности браузера
+
 [/CODE]
 
 ### FixTime()
@@ -60,6 +63,7 @@ project.SendInfoToLog($"Оценка браузера: {score}");
 [CODE=csharp]
 browserScan.FixTime();
 //автоматически настроить временную зону браузера
+
 [/CODE][/SPOILER]
 [SPOILER= Captcha]
 
@@ -82,6 +86,7 @@ public static void CFSolve(this Instance instance)
 **Пример использования:**
 [CODE=csharp]
 //решить Cloudflare captcha
+
 instance.CFSolve();
 [/CODE]
 
@@ -104,6 +109,7 @@ public static string CFToken(this Instance instance, int deadline = 60, bool str
 **Пример использования:**
 [CODE=csharp]
 //получить токен с ожиданием 120 секунд
+
 string token = instance.CFToken(120);
 project.SendInfoToLog($"Получен токен: {token}");
 [/CODE]
@@ -123,6 +129,7 @@ public static bool CapGuru(this IZennoPosterProjectModel project)
 **Пример использования:**
 [CODE=csharp]
 //использовать Cap.Guru для решения captcha
+
 bool result = project.CapGuru();
 if (result)
 {
@@ -341,9 +348,11 @@ else
 **Пример:**
 [CODE=csharp]
 // найти элемент с QR-кодом
+
 HtmlElement qrElement = tab.FindElementByTag("img", 0);
 
 // декодировать QR-код
+
 string qrText = HtmlExtensions.DecodeQr(qrElement);
 
 if (qrText == "qrIsNull")
@@ -376,6 +385,7 @@ else
 **Пример:**
 [CODE=csharp]
 // найти ссылку на транзакцию
+
 HtmlElement linkElement = tab.FindElementByAttribute("a", "href", "*tx*", "text", 0);
 
 try 
@@ -411,9 +421,11 @@ catch (Exception ex)
 Пример:
 [CODE=csharp]
 // Поиск по id
+
 var element = instance.GetHe(("submitButton", "id"));
 
 // Поиск по атрибуту
+
 var button = instance.GetHe(("button", "class", "submit-btn", "exact", 0));
 [/CODE]
 
@@ -433,10 +445,12 @@ var button = instance.GetHe(("button", "class", "submit-btn", "exact", 0));
 Пример:
 [CODE=csharp]
 // Получить текст элемента
+
 string text = instance.HeGet(("title", "id"), deadline: 15, atr: "innertext");
 project.SendInfoToLog($"Текст заголовка: {text}", false);
 
 // Проверить отсутствие элемента
+
 string result = instance.HeGet(("error", "class"), method: "!");
 if (result == null)
 {
@@ -458,9 +472,11 @@ if (result == null)
 Пример:
 [CODE=csharp]
 // Обычный клик
+
 instance.HeClick(("submit", "id"), delay: 2, comment: "Кнопка отправки");
 
 // Клик до исчезновения popup
+
 instance.HeClick(("popup", "class"), method: "clickOut", comment: "Закрытие popup");
 [/CODE]
 
@@ -479,9 +495,11 @@ instance.HeClick(("popup", "class"), method: "clickOut", comment: "Закрыт�
 Пример:
 [CODE=csharp]
 // Ввод в поле email
+
 instance.HeSet(("email", "name"), "user@example.com", delay: 1);
 
 // Ввод в поле по атрибуту
+
 instance.HeSet(("input", "placeholder", "Введите имя", "exact", 0), "Иван Петров");
 [/CODE]
 
@@ -496,10 +514,12 @@ instance.HeSet(("input", "placeholder", "Введите имя", "exact", 0), "�
 Пример:
 [CODE=csharp]
 // Клик через querySelector
+
 string result = instance.JsClick("document.querySelector('.submit-button')", delay: 1);
 project.SendInfoToLog($"Результат JS клика: {result}", false);
 
 // Клик по элементу по ID
+
 string result2 = instance.JsClick("document.getElementById('confirmBtn')");
 [/CODE]
 
@@ -515,10 +535,12 @@ string result2 = instance.JsClick("document.getElementById('confirmBtn')");
 Пример:
 [CODE=csharp]
 // Установка значения через querySelector
+
 string result = instance.JsSet("document.querySelector('input[name=\"username\"]')", "myuser");
 project.SendInfoToLog($"Результат JS установки: {result}", false);
 
 // Установка в скрытое поле
+
 string result2 = instance.JsSet("document.getElementById('hiddenField')", "secretValue");
 [/CODE]
 
@@ -533,10 +555,12 @@ string result2 = instance.JsSet("document.getElementById('hiddenField')", "secre
 Пример:
 [CODE=csharp]
 // Получение URL страницы
+
 string url = instance.JsPost("window.location.href");
 project.SendInfoToLog($"Текущий URL: {url}", false);
 
 // Выполнение сложного скрипта
+
 string result = instance.JsPost("document.title + ' - ' + document.readyState", delay: 1);
 project.SendInfoToLog($"Информация о странице: {result}", false);
 [/CODE]
@@ -572,9 +596,11 @@ catch (Exception ex)
 Пример:
 [CODE=csharp]
 // Переход если страница отличается
+
 instance.Go("https://example.com/login");
 
 // Строгая проверка URL
+
 instance.Go("https://example.com/dashboard", strict: true);
 [/CODE]
 
@@ -596,9 +622,11 @@ instance.F5();
 Пример:
 [CODE=csharp]
 // Вставка текста
+
 instance.CtrlV("Текст для вставки");
 
 // Вставка пароля
+
 instance.CtrlV("mySecretPassword123");
 [/CODE]
 
@@ -611,6 +639,7 @@ instance.CtrlV("mySecretPassword123");
 Пример:
 [CODE=csharp]
 // Полная очистка для домена
+
 instance.ClearShit("example.com");
 [/CODE]
 
@@ -624,9 +653,11 @@ instance.ClearShit("example.com");
 Пример:
 [CODE=csharp]
 // Закрыть лишние вкладки
+
 instance.CloseExtraTabs(blank: true);
 
 // Оставить вторую вкладку
+
 instance.CloseExtraTabs(tabToKeep: 2);
 [/CODE][/SPOILER]
 [SPOILER= Traffic]
@@ -649,6 +680,7 @@ instance.CloseExtraTabs(tabToKeep: 2);
 **Пример:**
 [CODE=csharp]
 //создать экземпляр для работы с трафиком
+
 var traffic = new Traffic(project, instance, true);
 [/CODE]
 
@@ -671,9 +703,11 @@ var traffic = new Traffic(project, instance, true);
 **Пример:**
 [CODE=csharp]
 //получить токен из заголовков запроса
+
 string token = traffic.Get("api/login", "RequestHeaders");
 
 //получить тело ответа от API
+
 string response = traffic.Get("api/user", "ResponseBody", parse: true);
 [/CODE]
 
@@ -691,9 +725,11 @@ string response = traffic.Get("api/user", "ResponseBody", parse: true);
 **Пример:**
 [CODE=csharp]
 //получить все данные о запросе
+
 var requestData = traffic.Get("api/users");
 
 //использовать данные запроса
+
 string method = requestData["Method"];
 string statusCode = requestData["ResultCode"];
 string responseBody = requestData["ResponseBody"];
@@ -713,9 +749,11 @@ string responseBody = requestData["ResponseBody"];
 **Пример:**
 [CODE=csharp]
 //получить токен авторизации
+
 string authToken = traffic.GetHeader("api/profile");
 
 //получить user-agent
+
 string userAgent = traffic.GetHeader("api/data", "User-Agent");
 [/CODE]
 
@@ -734,9 +772,11 @@ string userAgent = traffic.GetHeader("api/data", "User-Agent");
 **Пример:**
 [CODE=csharp]
 //получить код ответа
+
 string statusCode = traffic.GetParam("api/login", "ResultCode");
 
 //получить тело запроса
+
 string requestBody = traffic.GetParam("api/submit", "RequestBody");
 [/CODE][/SPOILER]
 [/SPOILER]

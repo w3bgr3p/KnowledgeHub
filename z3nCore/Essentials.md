@@ -24,10 +24,12 @@ string text = "Мой секретный текст";
 string password = "mypassword123";
 
 //шифруем текст с автоматическим хешированием ключа
+
 string encrypted = AES.EncryptAES(text, password);
 project.SendInfoToLog($"Зашифрованный текст: {encrypted}");
 
 //шифруем с готовым 32-символьным ключом без хеширования
+
 string hexKey = "1234567890abcdef1234567890abcdef";
 string encrypted2 = AES.EncryptAES(text, hexKey, false);
 [/CODE]
@@ -48,10 +50,12 @@ string encryptedText = "A1B2C3D4..."; //зашифрованный текст
 string password = "mypassword123";
 
 //расшифровываем с тем же ключом
+
 string decrypted = AES.DecryptAES(encryptedText, password);
 project.SendInfoToLog($"Расшифрованный текст: {decrypted}");
 
 //если шифровали без хеширования ключа, то и расшифровывать нужно так же
+
 string hexKey = "1234567890abcdef1234567890abcdef";
 string decrypted2 = AES.DecryptAES(encryptedText, hexKey, false);
 [/CODE]
@@ -69,10 +73,12 @@ string decrypted2 = AES.DecryptAES(encryptedText, hexKey, false);
 string password = "mypassword123";
 
 //получаем MD5-хеш пароля
+
 string hash = AES.HashMD5(password);
 project.SendInfoToLog($"MD5 хеш: {hash}");
 
 //можно использовать как ключ для AES без дополнительного хеширования
+
 string text = "секретные данные";
 string encrypted = AES.EncryptAES(text, hash, false);
 [/CODE]
@@ -278,6 +284,7 @@ SAFU - это утилитарный класс для шифрования и �
 **Пример использования:**
 [CODE=csharp]
 //инициализация SAFU перед использованием
+
 SAFU.Initialize(project);
 [/CODE]
 
@@ -294,6 +301,7 @@ SAFU.Initialize(project);
 **Пример использования:**
 [CODE=csharp]
 //шифрование пароля
+
 string password = "mySecretPassword";
 string encryptedPassword = SAFU.Encode(project, password);
 project.SendInfoToLog($"Пароль зашифрован: {encryptedPassword}");
@@ -312,6 +320,7 @@ project.SendInfoToLog($"Пароль зашифрован: {encryptedPassword}")
 **Пример использования:**
 [CODE=csharp]
 //расшифровка пароля
+
 string encryptedPassword = "зашифрованная_строка";
 string originalPassword = SAFU.Decode(project, encryptedPassword);
 project.SendInfoToLog($"Пароль расшифрован: {originalPassword}");
@@ -329,6 +338,7 @@ project.SendInfoToLog($"Пароль расшифрован: {originalPassword}"
 **Пример использования:**
 [CODE=csharp]
 //получение аппаратного пароля
+
 string hardwarePassword = SAFU.HWPass(project);
 project.SendInfoToLog($"Аппаратный пароль: {hardwarePassword}");
 [/CODE][/SPOILER]
@@ -352,9 +362,11 @@ project.SendInfoToLog($"Аппаратный пароль: {hardwarePassword}");
 **Пример:**
 [CODE=csharp]
 // создание базового логгера
+
 var logger = new Logger(project);
 
 // логгер с включенным отображением и эмодзи
+
 var logger = new Logger(project, true, "🔧");
 [/CODE]
 
@@ -380,15 +392,19 @@ var logger = new Logger(project, true, "🔧");
 var logger = new Logger(project, true);
 
 // обычное сообщение
+
 logger.Send("Операция выполнена успешно");
 
 // предупреждение (автоматически оранжевым цветом)
+
 logger.Send("!W Внимание: низкий баланс");
 
 // ошибка с исключением
+
 logger.Send("!E Критическая ошибка", thr0w: true);
 
 // принудительное отображение
+
 logger.Send("Важная информация", show: true);
 [/CODE]
 
@@ -406,12 +422,15 @@ logger.Send("Важная информация", show: true);
 var logger = new Logger(project);
 
 // отправка базового отчета
+
 logger.SendToTelegram();
 
 // отчет с дополнительным сообщением
+
 logger.SendToTelegram("Обработано 150 элементов");
 
 // настройка токена в БД (выполняется заранее)
+
 project.DbSet("_api", "tg_logger", "apikey, extra", "YOUR_BOT_TOKEN|CHAT_ID/TOPIC_ID");
 [/CODE]
 
@@ -427,6 +446,7 @@ project.DbSet("_api", "tg_logger", "apikey, extra", "YOUR_BOT_TOKEN|CHAT_ID/TOPI
 
 [CODE=csharp]
 // настройка отображения времени и памяти
+
 project.Variables["cfgLog"].Value = "time,memory,caller";
 
 var logger = new Logger(project, true);
@@ -451,10 +471,12 @@ logger.Send("Тест с расширенной информацией");
 **Пример:**
 [CODE=csharp]
 //получить время в unix формате
+
 string unixTime = Time.Now();
 project.SendInfoToLog($"Unix время: {unixTime}");
 
 //получить время в ISO формате
+
 string isoTime = Time.Now("iso");
 project.SendInfoToLog($"ISO время: {isoTime}");
 [/CODE]
@@ -471,10 +493,12 @@ project.SendInfoToLog($"ISO время: {isoTime}");
 **Пример:**
 [CODE=csharp]
 //время до конца дня
+
 string endOfDay = Time.Cd();
 project.SendInfoToLog($"До конца дня: {endOfDay}");
 
 //добавить 30 минут к текущему времени
+
 string futureTime = Time.Cd(30, "unix");
 project.SendInfoToLog($"Через 30 минут: {futureTime}");
 [/CODE]
@@ -492,6 +516,7 @@ project.SendInfoToLog($"Через 30 минут: {futureTime}");
 **Пример:**
 [CODE=csharp]
 //узнать сколько секунд прошло с начала сессии
+
 int elapsed = project.TimeElapsed();
 project.SendInfoToLog($"Прошло секунд: {elapsed}");
 [/CODE]
@@ -504,10 +529,12 @@ project.SendInfoToLog($"Прошло секунд: {elapsed}");
 **Пример:**
 [CODE=csharp]
 //получить возраст сессии как строку
+
 string ageString = project.Age<string>();
 project.SendInfoToLog($"Возраст сессии: {ageString}");
 
 //получить возраст как TimeSpan
+
 TimeSpan ageTimeSpan = project.Age<TimeSpan>();
 project.SendInfoToLog($"Часов работы: {ageTimeSpan.Hours}");
 [/CODE]
@@ -521,9 +548,11 @@ project.SendInfoToLog($"Часов работы: {ageTimeSpan.Hours}");
 **Пример:**
 [CODE=csharp]
 //проверить таймаут в 60 минут
+
 project.TimeOut(60);
 
 //проверить таймаут из переменной timeOut
+
 project.TimeOut();
 [/CODE]
 
@@ -536,9 +565,11 @@ project.TimeOut();
 **Пример:**
 [CODE=csharp]
 //установить начальное время для дедлайна
+
 project.Deadline();
 
 //проверить дедлайн в 300 секунд
+
 project.Deadline(300);
 [/CODE]
 
@@ -552,9 +583,11 @@ project.Deadline(300);
 **Пример:**
 [CODE=csharp]
 //задержка из настройки cfgDelay
+
 project.Sleep();
 
 //случайная задержка от 5 до 10 секунд
+
 project.Sleep(5, 10);
 [/CODE]
 
@@ -564,6 +597,7 @@ project.Sleep(5, 10);
 **Пример:**
 [CODE=csharp]
 //начать новую сессию
+
 project.StartSession();
 [/CODE][/SPOILER]
 [/SPOILER]

@@ -23,14 +23,17 @@
 
 [CODE=csharp]
 //получить URL для Ethereum
+
 string ethRpc = Rpc.Get("Ethereum");
 project.SendInfoToLog($"Ethereum RPC: {ethRpc}", false);
 
 //получить URL для Solana (нечувствителен к регистру)
+
 string solanaRpc = Rpc.Get("solana");
 project.SendInfoToLog($"Solana RPC: {solanaRpc}", false);
 
 //обработка ошибки для неизвестной сети
+
 try
 {
     string unknownRpc = Rpc.Get("UnknownChain");
@@ -62,10 +65,12 @@ catch (ArgumentException ex)
 
 [CODE=csharp]
 //прямой доступ к Ethereum RPC
+
 string ethUrl = Rpc.Ethereum;
 project.SendInfoToLog($"ETH RPC: {ethUrl}", false);
 
 //использование для разных сетей
+
 string[] networks = { Rpc.Arbitrum, Rpc.Base, Rpc.Polygon };
 foreach(string rpc in networks)
 {
@@ -92,6 +97,7 @@ foreach(string rpc in networks)
 [CODE=csharp]
 var tx = new Tx(project, log: true);
 //создание экземпляра с включенным логированием
+
 [/CODE]
 
 ## Методы
@@ -115,6 +121,7 @@ var tx = new Tx(project, log: true);
 [CODE=csharp]
 string hash = tx.SendTx("https://rpc.ankr.com/eth", "0x123...", "0xabcd...", 0.1m, "", 2, 2);
 //отправка транзакции с удвоенной комиссией
+
 project.SendInfoToLog($"Транзакция отправлена: {hash}");
 [/CODE]
 
@@ -133,6 +140,7 @@ project.SendInfoToLog($"Транзакция отправлена: {hash}");
 **Пример:**
 [CODE=csharp]
 //выдать максимальное разрешение на USDT
+
 string hash = tx.Approve("0xdAC17F958D2ee523a2206206994597C13D831ec7", "0x456...", "max", "https://rpc.ankr.com/eth");
 project.SendInfoToLog($"Approve выполнен: {hash}");
 [/CODE]
@@ -151,6 +159,7 @@ project.SendInfoToLog($"Approve выполнен: {hash}");
 **Пример:**
 [CODE=csharp]
 //обменять 1 ETH на WETH
+
 string hash = tx.Wrap("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", 1.0m, "https://rpc.ankr.com/eth");
 project.SendInfoToLog($"Wrapped {hash}");
 [/CODE]
@@ -169,6 +178,7 @@ project.SendInfoToLog($"Wrapped {hash}");
 **Пример:**
 [CODE=csharp]
 //отправить 0.5 ETH
+
 string hash = tx.SendNative("0x789...", 0.5m, "https://rpc.ankr.com/eth");
 project.SendInfoToLog($"Отправлено: {hash}");
 [/CODE]
@@ -188,6 +198,7 @@ project.SendInfoToLog($"Отправлено: {hash}");
 **Пример:**
 [CODE=csharp]
 //отправить 100 USDT
+
 string hash = tx.SendERC20("0xdAC17F958D2ee523a2206206994597C13D831ec7", "0x789...", 100m, "https://rpc.ankr.com/eth");
 project.SendInfoToLog($"Токены отправлены: {hash}");
 [/CODE]
@@ -207,6 +218,7 @@ project.SendInfoToLog($"Токены отправлены: {hash}");
 **Пример:**
 [CODE=csharp]
 //отправить NFT с ID 123
+
 string hash = tx.SendERC721("0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D", "0x789...", 123, "https://rpc.ankr.com/eth");
 project.SendInfoToLog($"NFT отправлена: {hash}");
 [/CODE][/SPOILER]
@@ -261,6 +273,7 @@ else
 var evmTools = new EvmTools();
 bool result = await evmTools.WaitTx("https://bsc-dataseed.binance.org", "0xabc123...", 90);
 //проверить результат транзакции
+
 [/CODE]
 
 **Native(string rpc, string address)**
@@ -277,6 +290,7 @@ bool result = await evmTools.WaitTx("https://bsc-dataseed.binance.org", "0xabc12
 var evmTools = new EvmTools();
 string hexBalance = await evmTools.Native("https://polygon-rpc.com", "0x742d35Cc6B...");
 //преобразовать hex в decimal используя расширения
+
 decimal balance = hexBalance.ToDecimal(18);
 project.SendInfoToLog($"Баланс: {balance} MATIC", false);
 [/CODE]
@@ -297,6 +311,7 @@ var evmTools = new EvmTools();
 string usdcContract = "0xA0b86a33E6.."; 
 string balance = await evmTools.Erc20(usdcContract, "https://mainnet.infura.io/v3/key", "0x123...");
 //конвертировать в readable формат
+
 decimal readableBalance = balance.ToDecimal(6); //USDC имеет 6 десятичных знаков
 project.SendInfoToLog($"Баланс USDC: {readableBalance}", false);
 [/CODE]
@@ -376,6 +391,7 @@ var evmTools = new EvmTools();
 string chainIdHex = await evmTools.ChainId("https://polygon-rpc.com");
 int chainId = Convert.ToInt32(chainIdHex, 16);
 //137 = Polygon, 1 = Ethereum, 56 = BSC
+
 project.SendInfoToLog($"Chain ID: {chainId}", false);
 [/CODE]
 
@@ -585,6 +601,7 @@ project.SendInfoToLog($"Информация об Ethereum: {ethInfo}", false);
 var coinGecko = new CoinGecco();
 string tokenInfo = await coinGecko.TokenByAddress("ethereum");
 //обработать полученную информацию
+
 [/CODE]
 
 **PriceByTiker(string tiker)**
@@ -739,6 +756,7 @@ project.SendInfoToLog($"Баланс USDT: {usdtBalance}", false);
 [CODE=csharp]
 bool success = W3bTools.WaitTx("https://polygon-rpc.com", "0xabc123...", 120, "", true, true);
 //проверить результат
+
 [/CODE]
 
 **SolNative(string address, string rpc = "https://api.mainnet-beta.solana.com")**
@@ -784,6 +802,7 @@ project.SendInfoToLog($"BTC: ${btcPrice}, ETH: ${ethPrice}", false);
 Пример:
 [CODE=csharp]
 //конвертировать $100 в ETH по курсу KuCoin
+
 decimal ethAmount = project.UsdToToken(100m, "ETH", "KuCoin");
 project.SendInfoToLog($"$100 = {ethAmount} ETH", false);
 [/CODE][/SPOILER]

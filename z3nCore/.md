@@ -23,6 +23,7 @@
 [CODE=csharp]
 var wallet = new BackpackWallet(project, instance, log: true, key: "key");
 //создать экземпляр с логированием и ключом из базы данных
+
 [/CODE]
 
 ## Методы
@@ -42,6 +43,7 @@ var wallet = new BackpackWallet(project, instance, log: true, key: "key");
 string address = wallet.Launch(log: true);
 project.SendInfoToLog($"Адрес кошелька: {address}");
 //запустить кошелек и получить адрес
+
 [/CODE]
 
 ### ActiveAddress(bool log = false) : string
@@ -58,6 +60,7 @@ project.SendInfoToLog($"Адрес кошелька: {address}");
 string address = wallet.ActiveAddress();
 project.SendInfoToLog($"Текущий адрес: {address}");
 //получить адрес активного кошелька
+
 [/CODE]
 
 ### CurrentChain(bool log = true) : string
@@ -73,6 +76,7 @@ project.SendInfoToLog($"Текущий адрес: {address}");
 [CODE=csharp]
 string chain = wallet.CurrentChain();
 //определить текущую сеть
+
 if (chain == "mainnet") 
 {
 }
@@ -89,6 +93,7 @@ if (chain == "mainnet")
 [CODE=csharp]
 wallet.Unlock(log: true);
 //разблокировать кошелек
+
 [/CODE]
 
 ### Approve(bool log = false) : void
@@ -102,6 +107,7 @@ wallet.Unlock(log: true);
 [CODE=csharp]
 wallet.Approve();
 //подтвердить действие в кошельке
+
 [/CODE]
 
 ### Connect(bool log = false) : void
@@ -115,6 +121,7 @@ wallet.Approve();
 [CODE=csharp]
 wallet.Connect();
 //подключить кошелек к сайту
+
 [/CODE]
 
 ### Devmode(bool enable = true) : void
@@ -128,6 +135,7 @@ wallet.Connect();
 [CODE=csharp]
 wallet.Devmode(true);
 //включить режим разработчика
+
 [/CODE]
 
 ### DevChain(string reqmode = "devnet") : void
@@ -141,6 +149,7 @@ wallet.Devmode(true);
 [CODE=csharp]
 wallet.DevChain("testnet");
 //переключиться на тестовую сеть
+
 [/CODE]
 
 ### Add(string type = "Ethereum", string source = "key") : void
@@ -155,6 +164,7 @@ wallet.DevChain("testnet");
 [CODE=csharp]
 wallet.Add("Solana", "key");
 //добавить Solana кошелек из приватного ключа
+
 [/CODE]
 
 ### Switch(string type) : void
@@ -168,6 +178,7 @@ wallet.Add("Solana", "key");
 [CODE=csharp]
 wallet.Switch("Ethereum");
 //переключиться на Ethereum кошелек
+
 [/CODE]
 
 ### Current() : string
@@ -180,6 +191,7 @@ wallet.Switch("Ethereum");
 [CODE=csharp]
 string currentType = wallet.Current();
 //определить тип текущего кошелька
+
 project.SendInfoToLog($"Текущий тип: {currentType}");
 [/CODE][/SPOILER]
 [SPOILER= KeplrWallet]
@@ -203,9 +215,11 @@ project.SendInfoToLog($"Текущий тип: {currentType}");
 **Пример:**
 [CODE=csharp]
 // инициализация KeplrWallet с логированием
+
 var keplrWallet = new KeplrWallet(project, instance, log: true);
 
 //отправить информацию в лог
+
 [/CODE]
 
 ## Публичные методы
@@ -223,9 +237,11 @@ var keplrWallet = new KeplrWallet(project, instance, log: true);
 **Пример:**
 [CODE=csharp]
 // запуск Keplr с импортом из seed-фразы
+
 keplrWallet.Launch("seed", log: true);
 
 //отправить информацию в лог
+
 [/CODE]
 
 ### SetSource(string, bool)
@@ -240,9 +256,11 @@ keplrWallet.Launch("seed", log: true);
 **Пример:**
 [CODE=csharp]
 // переключение на кошелек из приватного ключа
+
 keplrWallet.SetSource("keyEvm", log: true);
 
 //отправить информацию в лог
+
 [/CODE]
 
 ### Unlock(bool)
@@ -256,9 +274,11 @@ keplrWallet.SetSource("keyEvm", log: true);
 **Пример:**
 [CODE=csharp]
 // разблокировка кошелька
+
 keplrWallet.Unlock(log: true);
 
 //отправить информацию в лог
+
 [/CODE]
 
 ### Sign(bool)
@@ -272,9 +292,11 @@ keplrWallet.Unlock(log: true);
 **Пример:**
 [CODE=csharp]
 // подписание транзакции
+
 keplrWallet.Sign(log: true);
 
 //отправить информацию в лог
+
 [/CODE]
 
 ### KeplrApprove(bool)
@@ -288,9 +310,11 @@ keplrWallet.Sign(log: true);
 **Пример:**
 [CODE=csharp]
 // использование устаревшего метода (не рекомендуется)
+
 string result = keplrWallet.KeplrApprove(log: true);
 
 //отправить предупреждение в лог
+
 project.SendWarningToLog("Используется устаревший метод KeplrApprove");
 [/CODE][/SPOILER]
 [SPOILER= ZerionWallet]
@@ -334,10 +358,12 @@ var wallet = new ZerionWallet(project, instance, log: true);
 **Пример:**
 [CODE=csharp]
 //запустить кошелек с основным ключом
+
 string address = wallet.Launch();
 project.SendInfoToLog($"Кошелек запущен: {address}");
 
 //запустить с реферальным кодом
+
 string address = wallet.Launch(refCode: "ABC123");
 project.SendInfoToLog($"Кошелек запущен с рефералом: {address}");
 [/CODE]
@@ -355,12 +381,14 @@ project.SendInfoToLog($"Кошелек запущен с рефералом: {ad
 **Пример:**
 [CODE=csharp]
 //подписать транзакцию
+
 bool success = wallet.Sign();
 if (success)
 {
 }
 
 //подписать с увеличенным временем ожидания
+
 bool success = wallet.Sign(deadline: 30);
 [/CODE]
 
@@ -374,6 +402,7 @@ bool success = wallet.Sign(deadline: 30);
 **Пример:**
 [CODE=csharp]
 //подключить кошелек к сайту
+
 wallet.Connect();
 [/CODE]
 
@@ -387,9 +416,11 @@ wallet.Connect();
 **Пример:**
 [CODE=csharp]
 //переключиться на основной ключ
+
 wallet.SwitchSource("key");
 
 //переключиться на адрес из мнемоники
+
 wallet.SwitchSource("seed");
 [/CODE]
 
@@ -406,6 +437,7 @@ wallet.SwitchSource("seed");
 **Пример:**
 [CODE=csharp]
 //дождаться завершения транзакции
+
 bool success = wallet.WaitTx();
 if (success)
 {
@@ -428,6 +460,7 @@ else
 **Пример:**
 [CODE=csharp]
 //получить список доступных наград
+
 var rewards = wallet.Claimable("0x742d35Cc6634C0532925a3b8D46d07c30e5b7A0c");
 foreach (string rewardId in rewards)
 {
@@ -444,6 +477,7 @@ foreach (string rewardId in rewards)
 **Пример:**
 [CODE=csharp]
 //получить адрес активного кошелька
+
 string currentAddress = wallet.ActiveAddress();
 project.SendInfoToLog($"Текущий адрес: {currentAddress}");
 [/CODE]
@@ -462,6 +496,7 @@ project.SendInfoToLog($"Текущий адрес: {currentAddress}");
 **Пример:**
 [CODE=csharp]
 //извлечь данные транзакции из URL
+
 string txData = ZerionWallet.TxFromUrl(instance.ActiveTab.URL);
 project.SendInfoToLog($"Данные транзакции: {txData}");
 [/CODE][/SPOILER]

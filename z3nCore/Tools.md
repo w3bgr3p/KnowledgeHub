@@ -20,6 +20,7 @@
 [CODE=csharp]
 var accountant = new Accountant(project, true);
 //включаем логирование операций
+
 [/CODE]
 
 ## Методы
@@ -34,9 +35,11 @@ var accountant = new Accountant(project, true);
 **Пример:**
 [CODE=csharp]
 //показать все колонки таблицы балансов
+
 accountant.ShowBalanceTable();
 
 //показать только определенные колонки
+
 accountant.ShowBalanceTable("acc0,eth,btc,usdt");
 [/CODE]
 
@@ -56,6 +59,7 @@ var balances = new List<string>
     "wallet3:1.5678"
 };
 //отобразить балансы из списка
+
 accountant.ShowBalanceTableFromList(balances);
 [/CODE]
 
@@ -90,16 +94,20 @@ accountant.ShowBalanceTableFromList(balances);
 **Пример:**
 [CODE=csharp]
 // преобразование hex в base64
+
 string result = Converer.ConvertFormat(project, "48656c6c6f", "hex", "base64", true);
 project.SendInfoToLog($"Результат: {result}");
 
 // преобразование текста в hex
+
 string hexResult = Converer.ConvertFormat(project, "Hello World", "text", "hex");
 project.SendInfoToLog($"Текст в hex: {hexResult}");
 
 // преобразование bech32 адреса в hex
+
 string bech32ToHex = Converer.ConvertFormat(project, "init1qqqsyqcyq5rqwzqfpg9scrgwpugpzysnpswf", "bech32", "hex");
 //результат преобразования
+
 if (bech32ToHex != null)
 {
     project.SendInfoToLog($"Bech32 в hex: {bech32ToHex}");
@@ -145,6 +153,7 @@ var forms = new F0rms(project);
 **Пример:**
 [CODE=csharp]
 //получить текст от пользователя
+
 string userText = F0rms.InputBox("Введите ваш текст:", 800, 400);
 project.SendInfoToLog($"Введенный текст: {userText}");
 [/CODE]
@@ -162,6 +171,7 @@ project.SendInfoToLog($"Введенный текст: {userText}");
 **Пример:**
 [CODE=csharp]
 //получить данные построчно
+
 var dataDict = forms.GetLinesByKey("email", "Введите email адреса");
 if (dataDict != null)
 {
@@ -185,6 +195,7 @@ if (dataDict != null)
 **Пример:**
 [CODE=csharp]
 //получить список строк
+
 var lines = forms.GetLines("username", "Введите имена пользователей");
 if (lines != null)
 {
@@ -211,6 +222,7 @@ if (lines != null)
 **Пример:**
 [CODE=csharp]
 //получить 3 пары ключ-значение
+
 var keyPlaceholders = new List<string> { "name", "age", "city" };
 var valuePlaceholders = new List<string> { "Введите имя", "Введите возраст", "Введите город" };
 
@@ -240,6 +252,7 @@ if (pairs != null)
 **Пример:**
 [CODE=csharp]
 //получить настройки с чекбоксами
+
 var options = new List<string> { "option1", "option2", "option3" };
 var labels = new List<string> { "Включить уведомления", "Автосохранение", "Темная тема" };
 
@@ -268,6 +281,7 @@ if (boolPairs != null)
 **Пример:**
 [CODE=csharp]
 //получить пары как строку
+
 var pairsString = forms.GetKeyValueString(2, 
     new List<string> { "name", "email" }, 
     new List<string> { "Иван", "ivan@example.com" },
@@ -275,6 +289,7 @@ var pairsString = forms.GetKeyValueString(2,
 
 project.SendInfoToLog($"Пары: {pairsString}");
 //результат: "name='Иван', email='ivan@example.com'"
+
 [/CODE]
 
 ### GetSelectedItem
@@ -291,6 +306,7 @@ project.SendInfoToLog($"Пары: {pairsString}");
 **Пример:**
 [CODE=csharp]
 //выбор из списка браузеров
+
 var browsers = new List<string> { "Chrome", "Firefox", "Safari", "Edge" };
 string selectedBrowser = forms.GetSelectedItem(browsers, "Выберите браузер", "Браузер:");
 
@@ -319,12 +335,15 @@ if (!string.IsNullOrEmpty(selectedBrowser))
 **Пример использования**:
 [CODE=csharp]
 //поиск всех методов содержащих слово "Click"
+
 project.Help("Click");
 
 //вызов с диалогом ввода поискового запроса  
+
 project.Help();
 
 //поиск методов работы с элементами
+
 project.Help("Element");
 [/CODE]
 
@@ -356,6 +375,7 @@ string otpCode = OTP.Offline(secret);
 project.SendInfoToLog($"Сгенерированный OTP код: {otpCode}");
 
 //дождаться нового кода если осталось меньше 10 секунд
+
 string otpCode2 = OTP.Offline(secret, 10);
 project.SendInfoToLog($"Новый OTP код: {otpCode2}");
 [/CODE]
@@ -395,6 +415,7 @@ project.SendInfoToLog($"OTP код из FirstMail: {otpCode}");
 [CODE=csharp]
 var ghSync = new GHsync(project);
 //создаем экземпляр для работы с GitHub
+
 [/CODE]
 
 ## Публичные методы
@@ -413,6 +434,7 @@ var ghSync = new GHsync(project);
 string hash = GHsync.GetFileHash(@"C:\myproject\file.txt");
 project.SendInfoToLog($"Hash файла: {hash}");
 //получаем хеш файла для проверки изменений
+
 [/CODE]
 
 ### Main(string baseDir, string token, string username, string commmit = "ts")
@@ -430,8 +452,10 @@ project.SendInfoToLog($"Hash файла: {hash}");
 var ghSync = new GHsync(project);
 //создаем экземпляр синхронизации
 
+
 ghSync.Main(@"C:\MyProjects", "ghp_your_token_here", "yourusername", "Обновление проектов");
 //синхронизируем все проекты из папки
+
 [/CODE]
 
 **Особенности работы:**

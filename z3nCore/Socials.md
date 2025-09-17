@@ -21,6 +21,7 @@
 [CODE=csharp]
 var discord = new Discord(project, instance, true);
 //создать экземпляр Discord с включенным логированием
+
 [/CODE]
 
 ## Методы
@@ -35,6 +36,7 @@ var discord = new Discord(project, instance, true);
 [CODE=csharp]
 string status = discord.CredsFromDb();
 //загрузить данные аккаунта из БД
+
 project.SendInfoToLog($"Статус аккаунта: {status}");
 [/CODE]
 
@@ -53,6 +55,7 @@ project.SendInfoToLog($"Статус аккаунта: {status}");
 [CODE=csharp]
 discord.Log("Начинаем авторизацию", log: true);
 //отправить сообщение в лог с принудительным показом
+
 [/CODE]
 
 ### DSload(bool log = false)
@@ -68,6 +71,7 @@ discord.Log("Начинаем авторизацию", log: true);
 [CODE=csharp]
 string result = discord.DSload(true);
 //авторизоваться в Discord
+
 if (result == "ok" || result.Contains("@"))
 {
 }
@@ -83,6 +87,7 @@ if (result == "ok" || result.Contains("@"))
 [CODE=csharp]
 string servers = discord.DSservers();
 //получить список серверов
+
 project.SendInfoToLog($"Серверы: {servers}");
 [/CODE][/SPOILER]
 [SPOILER= GitHub]
@@ -209,6 +214,7 @@ github.SaveCookies();
 **Пример:**
 [CODE=csharp]
 //создание экземпляра для работы с Google
+
 Google google = new Google(project, instance, log: true);
 [/CODE]
 
@@ -227,6 +233,7 @@ Google google = new Google(project, instance, log: true);
 **Пример:**
 [CODE=csharp]
 //авторизация в Google аккаунте
+
 string result = google.Load(log: true, cookieBackup: true);
 if (result == "ok")
 {
@@ -249,10 +256,12 @@ else
 **Пример:**
 [CODE=csharp]
 //проверка текущего состояния
+
 string currentState = google.State();
 project.SendInfoToLog($"Текущее состояние: {currentState}");
 
 //обработка разных состояний
+
 switch (currentState)
 {
     case "ok":
@@ -277,6 +286,7 @@ switch (currentState)
 **Пример:**
 [CODE=csharp]
 //авторизация через Google Auth
+
 string authResult = google.GAuth(log: true);
 if (authResult.Contains("SUCCESS"))
 {
@@ -294,6 +304,7 @@ else
 **Пример:**
 [CODE=csharp]
 //сохранение кук после успешной авторизации
+
 google.SaveCookies();
 [/CODE]
 
@@ -304,6 +315,7 @@ google.SaveCookies();
 **Пример:**
 [CODE=csharp]
 //получение информации о безопасности аккаунта
+
 google.ParseSecurity();
 [/CODE][/SPOILER]
 [SPOILER= Guild]
@@ -326,9 +338,11 @@ google.ParseSecurity();
 **Пример:**
 [CODE=csharp]
 // создание экземпляра Guild с логированием
+
 var guild = new Guild(project, instance, true);
 
 // создание экземпляра Guild без логирования  
+
 var guild = new Guild(project, instance);
 [/CODE]
 
@@ -345,12 +359,15 @@ var guild = new Guild(project, instance);
 **Пример:**
 [CODE=csharp]
 // парсинг ролей с добавлением к существующим данным
+
 guild.ParseRoles("guild_data", true);
 
 // парсинг ролей с перезаписью данных
+
 guild.ParseRoles("guild_data", false);
 
 // проверка результатов
+
 string doneRoles = project.Variables["guildDone"].Value;
 string undoneRoles = project.Variables["guildUndone"].Value;
 project.SendInfoToLog($"Завершенные роли: {doneRoles}");
@@ -369,11 +386,13 @@ project.SendInfoToLog($"Незавершенные роли: {undoneRoles}");
 **Пример:**
 [CODE=csharp]
 // определение типа по SVG
+
 string svgCode = "M108,136a16,16,0,1,1-16-16A16,16,0,0,1,108,136Z...";
 string socialType = guild.Svg(svgCode);
 project.SendInfoToLog($"Тип социальной сети: {socialType}"); // выведет "discord"
 
 // если тип не распознан
+
 string unknownSvg = "some-unknown-svg-code";
 string result = guild.Svg(unknownSvg);
 project.SendInfoToLog($"Результат: {result}"); // выведет пустую строку
@@ -391,9 +410,11 @@ project.SendInfoToLog($"Результат: {result}"); // выведет пус
 **Пример:**
 [CODE=csharp]
 // получение элемента с иконкой
+
 var iconElement = instance.ActiveTab.FindElementByAttribute("div", "class", "icon-container", "text", 0);
 
 // определение типа социальной сети
+
 string socialType = guild.Svg(iconElement);
 if (!string.IsNullOrEmpty(socialType))
 {
@@ -414,9 +435,11 @@ else
 **Пример:**
 [CODE=csharp]
 // парсинг подключений
+
 var connections = guild.ParseConnections();
 
 // обработка результатов
+
 foreach (var connection in connections)
 {
     string platform = connection.Key;     // тип платформы (discord, twitter и т.д.)
@@ -433,6 +456,7 @@ foreach (var connection in connections)
 }
 
 // проверка конкретной платформы
+
 if (connections.ContainsKey("discord"))
 {
     project.SendInfoToLog($"Discord статус: {connections["discord"]}");
@@ -448,6 +472,7 @@ if (connections.ContainsKey("discord"))
 **Пример:**
 [CODE=csharp]
 // получение главной кнопки
+
 var mainButton = guild.MainButton();
 
 if (mainButton != null)

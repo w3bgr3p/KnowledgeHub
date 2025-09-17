@@ -42,6 +42,7 @@ var httpClient = new NetHttp(project, true); //создать клиент с л
 var headers = new Dictionary<string, string> { {"Authorization", "Bearer token123"} };
 string response = httpClient.GET("https://api.example.com/data", "+", headers, true);
 //получить данные с авторизацией и парсингом JSON
+
 project.SendInfoToLog(response);
 [/CODE]
 
@@ -67,6 +68,7 @@ string jsonData = "{\"name\":\"test\",\"value\":123}";
 var headers = new Dictionary<string, string> { {"Content-Type", "application/json"} };
 string response = httpClient.POST("https://api.example.com/create", jsonData, "+", headers);
 //отправить JSON данные на сервер
+
 project.SendInfoToLog("Ответ: " + response);
 [/CODE]
 
@@ -89,6 +91,7 @@ project.SendInfoToLog("Ответ: " + response);
 string updateData = "{\"id\":1,\"status\":\"active\"}";
 string response = httpClient.PUT("https://api.example.com/update/1", updateData, "+");
 //обновить запись с id=1
+
 project.SendInfoToLog("Обновлено: " + response);
 [/CODE]
 
@@ -108,6 +111,7 @@ project.SendInfoToLog("Обновлено: " + response);
 [CODE=csharp]
 string response = httpClient.DELETE("https://api.example.com/delete/1", "+");
 //удалить запись с id=1
+
 project.SendInfoToLog("Удалено: " + response);
 [/CODE]
 
@@ -174,20 +178,24 @@ if (proxySet) {
 **Пример использования:**
 [CODE=csharp]
 //простой GET-запрос
+
 string response = project.GET("https://api.example.com/data");
 
 //запрос с прокси и логированием
+
 string response = project.GET("https://api.example.com/data", 
     proxy: "192.168.1.1:8080", 
     log: true);
 
 //запрос с заголовками и JSON-парсингом
+
 string[] headers = {"Authorization: Bearer token123"};
 string response = project.GET("https://api.example.com/user", 
     headers: headers, 
     parseJson: true);
 
 //запрос с автоматическим прокси
+
 string response = project.GET("https://api.example.com/data", 
     proxy: "+", 
     deadline: 30);
@@ -212,16 +220,19 @@ string response = project.GET("https://api.example.com/data",
 **Пример использования:**
 [CODE=csharp]
 //простой POST-запрос с JSON
+
 string jsonData = "{\"name\":\"test\",\"value\":123}";
 string response = project.POST("https://api.example.com/create", jsonData);
 
 //POST с прокси и логированием
+
 string response = project.POST("https://api.example.com/update", 
     body: jsonData,
     proxy: "user:pass@192.168.1.1:8080",
     log: true);
 
 //POST с заголовками авторизации
+
 string[] headers = {"Authorization: Bearer token123", "Content-Type: application/json"};
 string response = project.POST("https://api.example.com/secure", 
     body: jsonData,
@@ -242,12 +253,15 @@ string response = project.POST("https://api.example.com/secure",
 **Пример использования:**
 [CODE=csharp]
 //установка прокси для текущего экземпляра
+
 project.SetProxy(instance);
 
 //установка конкретного прокси
+
 project.SetProxy(instance, "192.168.1.1:8080");
 
 //установка прокси с авторизацией
+
 project.SetProxy(instance, "user:pass@192.168.1.1:8080");
 [/CODE][/SPOILER]
 [/SPOILER]

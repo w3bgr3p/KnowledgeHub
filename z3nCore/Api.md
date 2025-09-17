@@ -86,6 +86,7 @@ string optimizedCode = ai.OptimizeCode(originalCode, true);
 string appealMessage = ai.GoogleAppeal();
 project.SendInfoToLog($"Обращение в Google: {appealMessage}", false);
 //отправить сообщение в форму поддержки
+
 [/CODE][/SPOILER]
 [SPOILER= BinanceApi]
 
@@ -107,6 +108,7 @@ project.SendInfoToLog($"Обращение в Google: {appealMessage}", false);
 [CODE=csharp]
 var binanceApi = new BinanceApi(project, log: true);
 //создать экземпляр с включенным логированием
+
 [/CODE]
 
 ## Методы
@@ -213,9 +215,11 @@ if(!transaction.Contains("NoIdFound"))
 **Пример:**
 [CODE=csharp]
 //создать экземпляр без логирования
+
 var dmail = new DMail(project);
 
 //создать экземпляр с логированием и указанным ключом
+
 var dmail = new DMail(project, "your_private_key", true);
 [/CODE]
 
@@ -233,6 +237,7 @@ var dmail = new DMail(project, "your_private_key", true);
 [CODE=csharp]
 var dmail = new DMail(project);
 //проверить авторизацию
+
 dmail.CheckAuth();
 [/CODE]
 
@@ -248,6 +253,7 @@ dmail.CheckAuth();
 [CODE=csharp]
 var dmail = new DMail(project);
 //получить все письма
+
 dynamic allMails = dmail.GetAll();
 project.SendInfoToLog($"Получено писем: {allMails.Count}");
 [/CODE]
@@ -271,6 +277,7 @@ project.SendInfoToLog($"Получено писем: {allMails.Count}");
 var dmail = new DMail(project);
 dmail.GetAll();
 //прочитать первое письмо без удаления
+
 var message = dmail.ReadMsg(0, markAsRead: true, trash: false);
 project.SendInfoToLog($"От: {message["sender"]}, Тема: {message["subj"]}");
 [/CODE]
@@ -291,10 +298,12 @@ project.SendInfoToLog($"От: {message["sender"]}, Тема: {message["subj"]}")
 [CODE=csharp]
 var dmail = new DMail(project);
 //получить количество непрочитанных писем
+
 string unreadCount = dmail.GetUnread(key: "mail_unread_count");
 project.SendInfoToLog($"Непрочитанных писем: {unreadCount}");
 
 //получить полную информацию
+
 string fullInfo = dmail.GetUnread();
 project.SendInfoToLog($"Полная статистика: {fullInfo}");
 [/CODE]
@@ -317,6 +326,7 @@ project.SendInfoToLog($"Полная статистика: {fullInfo}");
 var dmail = new DMail(project);
 dmail.GetAll();
 //переместить первое письмо в корзину
+
 dmail.Trash(0);
 [/CODE]
 
@@ -338,6 +348,7 @@ dmail.Trash(0);
 var dmail = new DMail(project);
 dmail.GetAll();
 //отметить первое письмо как прочитанное
+
 dmail.MarkAsRead(0);
 [/CODE][/SPOILER]
 [SPOILER= FirstMail]
@@ -359,9 +370,11 @@ dmail.MarkAsRead(0);
 **Пример:**
 [CODE=csharp]
 // создать экземпляр без логирования
+
 var firstMail = new FirstMail(project);
 
 // создать экземпляр с логированием
+
 var firstMail = new FirstMail(project, true);
 [/CODE]
 
@@ -379,9 +392,11 @@ var firstMail = new FirstMail(project, true);
 **Пример:**
 [CODE=csharp]
 // получить последнее письмо
+
 string jsonResponse = firstMail.GetMail("user@example.com");
 
 // данные письма теперь доступны через project.Json
+
 string subject = project.Json.subject; // тема письма
 string text = project.Json.text;       // текст письма
 [/CODE]
@@ -448,9 +463,11 @@ catch (Exception ex)
 **Пример:**
 [CODE=csharp]
 // удалить все письма
+
 string result = firstMail.Delete("user@example.com");
 
 // удалить только прочитанные письма
+
 string result = firstMail.Delete("user@example.com", true);
 [/CODE]
 
@@ -466,6 +483,7 @@ string result = firstMail.Delete("user@example.com", true);
 **Пример:**
 [CODE=csharp]
 // получить одно письмо
+
 string message = firstMail.GetOne("user@example.com");
 project.Json.FromString(message);
 [/CODE]
@@ -482,10 +500,12 @@ project.Json.FromString(message);
 **Пример:**
 [CODE=csharp]
 // получить все письма
+
 string allMessages = firstMail.GetAll("user@example.com");
 project.Json.FromString(allMessages);
 
 // обработать каждое письмо в цикле
+
 for (int i = 0; i < project.Json.messages.Count; i++)
 {
     string subject = project.Json.messages[i].subject;
@@ -512,9 +532,11 @@ for (int i = 0; i < project.Json.messages.Count; i++)
 **Пример:**
 [CODE=csharp]
 // создать экземпляр для работы с Galxe
+
 var galxe = new Galxe(project, instance);
 
 // создать экземпляр с логированием
+
 var galxe = new Galxe(project, instance, true);
 [/CODE]
 
@@ -533,13 +555,16 @@ var galxe = new Galxe(project, instance, true);
 **Пример:**
 [CODE=csharp]
 // получить невыполненные задания
+
 var uncompletedTasks = galxe.ParseTasks("tasksUnComplete");
 project.SendInfoToLog($"Найдено невыполненных заданий: {uncompletedTasks.Count}");
 
 // получить выполненные требования
+
 var completedRequirements = galxe.ParseTasks("reqComplete");
 
 // пройти по всем невыполненным заданиям
+
 foreach (var task in uncompletedTasks)
 {
     project.SendInfoToLog($"Задание: {task.InnerText}");
@@ -564,6 +589,7 @@ string userToken = "Bearer your_token_here";
 string walletAddress = "0x1234567890abcdef...";
 
 // получить информацию о пользователе
+
 string userInfo = galxe.BasicUserInfo(userToken, walletAddress);
 
 if (userInfo != null)
@@ -599,6 +625,7 @@ string spaceAlias = "example-space";
 string walletAddress = "0x1234567890abcdef...";
 
 // получить очки лояльности
+
 string loyaltyInfo = galxe.GetLoyaltyPoints(spaceAlias, walletAddress);
 
 if (loyaltyInfo != null)
@@ -636,9 +663,11 @@ else
 **Пример:**
 [CODE=csharp]
 // создать экземпляр с логированием
+
 var gazZip = new GazZip(project, log: true);
 
 // создать экземпляр без логирования
+
 var gazZip = new GazZip(project);
 [/CODE]
 
@@ -661,10 +690,12 @@ var gazZip = new GazZip(project);
 var gazZip = new GazZip(project, log: true);
 
 // автоматический выбор исходной сети
+
 string txHash = gazZip.Refuel("sepolia", 0.001m);
 project.SendInfoToLog($"Транзакция: {txHash}");
 
 // использование конкретной исходной сети
+
 string rpcUrl = "https://rpc.ankr.com/eth";
 string result = gazZip.Refuel("bsc", 0.005m, rpcUrl, true);
 
@@ -696,6 +727,7 @@ else
 **Пример:**
 [CODE=csharp]
 //создать подключение к GitHub API
+
 var github = new GitHubApi("your_token_here", "your_username");
 [/CODE]
 
@@ -713,6 +745,7 @@ var github = new GitHubApi("your_token_here", "your_username");
 **Пример:**
 [CODE=csharp]
 //получить информацию о репозитории
+
 string repoInfo = github.GetRepositoryInfo("my-project");
 project.SendInfoToLog(repoInfo);
 [/CODE]
@@ -729,6 +762,7 @@ project.SendInfoToLog(repoInfo);
 **Пример:**
 [CODE=csharp]
 //получить список участников репозитория
+
 string collaborators = github.GetCollaborators("my-project");
 project.SendInfoToLog(collaborators);
 [/CODE]
@@ -745,6 +779,7 @@ project.SendInfoToLog(collaborators);
 **Пример:**
 [CODE=csharp]
 //создать новый приватный репозиторий
+
 string result = github.CreateRepository("new-project");
 project.SendInfoToLog("Репозиторий создан: " + result);
 [/CODE]
@@ -762,6 +797,7 @@ project.SendInfoToLog("Репозиторий создан: " + result);
 **Пример:**
 [CODE=csharp]
 //сделать репозиторий публичным
+
 string result = github.ChangeVisibility("my-project", false);
 project.SendInfoToLog("Видимость изменена: " + result);
 [/CODE]
@@ -780,6 +816,7 @@ project.SendInfoToLog("Видимость изменена: " + result);
 **Пример:**
 [CODE=csharp]
 //добавить участника с правами на запись
+
 string result = github.AddCollaborator("my-project", "developer123", "push");
 project.SendInfoToLog("Участник добавлен: " + result);
 [/CODE]
@@ -797,6 +834,7 @@ project.SendInfoToLog("Участник добавлен: " + result);
 **Пример:**
 [CODE=csharp]
 //удалить участника из репозитория
+
 string result = github.RemoveCollaborator("my-project", "old-developer");
 project.SendInfoToLog("Участник удален: " + result);
 [/CODE]
@@ -815,6 +853,7 @@ project.SendInfoToLog("Участник удален: " + result);
 **Пример:**
 [CODE=csharp]
 //изменить права участника на администраторские
+
 string result = github.ChangeCollaboratorPermission("my-project", "developer123", "admin");
 project.SendInfoToLog("Права изменены: " + result);
 [/CODE][/SPOILER]
@@ -836,6 +875,7 @@ project.SendInfoToLog("Права изменены: " + result);
 
 [CODE=csharp]
 // Создание экземпляра OkxApi
+
 var okx = new OkxApi(project, log: true);
 [/CODE]
 
@@ -853,6 +893,7 @@ var okx = new OkxApi(project, log: true);
 
 [CODE=csharp]
 // Получить список всех субсчетов
+
 var subAccounts = okx.OKXGetSubAccs();
 foreach (string subName in subAccounts)
 {
@@ -873,6 +914,7 @@ foreach (string subName in subAccounts)
 
 [CODE=csharp]
 // Получить максимальные суммы для вывода с торгового счета
+
 var maxWithdrawals = okx.OKXGetSubMax("sub1");
 foreach (string balance in maxWithdrawals)
 {
@@ -893,6 +935,7 @@ foreach (string balance in maxWithdrawals)
 
 [CODE=csharp]
 // Получить торговые балансы субсчета
+
 var tradingBalances = okx.OKXGetSubTrading("sub1");
 [/CODE]
 
@@ -909,6 +952,7 @@ var tradingBalances = okx.OKXGetSubTrading("sub1");
 
 [CODE=csharp]
 // Получить балансы фандинг-счета
+
 var fundingBalances = okx.OKXGetSubFunding("sub1");
 foreach (string balance in fundingBalances)
 {
@@ -929,6 +973,7 @@ foreach (string balance in fundingBalances)
 
 [CODE=csharp]
 // Получить все балансы со всех субсчетов
+
 var allBalances = okx.OKXGetSubsBal(log: true);
 foreach (string balance in allBalances)
 {
@@ -953,6 +998,7 @@ foreach (string balance in allBalances)
 
 [CODE=csharp]
 // Вывести 100 USDT на Ethereum
+
 okx.OKXWithdraw(
     "0x1234567890abcdef1234567890abcdef12345678", 
     "USDT", 
@@ -976,6 +1022,7 @@ okx.OKXWithdraw(
 
 [CODE=csharp]
 // Создать новый субаккаунт
+
 okx.OKXCreateSub("myNewSubAccount");
 [/CODE]
 
@@ -987,6 +1034,7 @@ okx.OKXCreateSub("myNewSubAccount");
 
 [CODE=csharp]
 // Собрать все средства с субсчетов на основной счет
+
 okx.OKXDrainSubs();
 [/CODE]
 
@@ -998,6 +1046,7 @@ okx.OKXDrainSubs();
 
 [CODE=csharp]
 // Создать максимальное количество субсчетов
+
 okx.OKXAddMaxSubs();
 [/CODE]
 
@@ -1014,10 +1063,12 @@ okx.OKXAddMaxSubs();
 
 [CODE=csharp]
 // Получить цену BTC в USDT как decimal
+
 decimal btcPrice = okx.OKXPrice<decimal>("BTC-USDT");
 project.SendInfoToLog($"Цена BTC: {btcPrice} USDT");
 
 // Получить цену как строку
+
 string priceString = okx.OKXPrice<string>("ETH-USDT");
 [/CODE][/SPOILER]
 [SPOILER= UnlockApi]
@@ -1039,6 +1090,7 @@ string priceString = okx.OKXPrice<string>("ETH-USDT");
 **Пример:**
 [CODE=csharp]
 //создать экземпляр UnlockApi
+
 var unlockApi = new UnlockApi(project, true);
 [/CODE]
 
@@ -1058,6 +1110,7 @@ var unlockApi = new UnlockApi(project, true);
 **Пример:**
 [CODE=csharp]
 //получить время истечения ключа с ID 1
+
 string expiration = unlockApi.keyExpirationTimestampFor("0x1234567890abcdef", 1);
 project.SendInfoToLog($"Ключ истекает: {expiration}");
 [/CODE]
@@ -1076,6 +1129,7 @@ project.SendInfoToLog($"Ключ истекает: {expiration}");
 **Пример:**
 [CODE=csharp]
 //получить владельца ключа с ID 1
+
 string owner = unlockApi.ownerOf("0x1234567890abcdef", 1);
 project.SendInfoToLog($"Владелец ключа: {owner}");
 [/CODE]
@@ -1093,6 +1147,7 @@ project.SendInfoToLog($"Владелец ключа: {owner}");
 **Пример:**
 [CODE=csharp]
 //декодировать HEX результат
+
 string result = unlockApi.Decode("0x000000000000000000000000a1b2c3d4e5f6", "ownerOf");
 project.SendInfoToLog($"Декодированный результат: {result}");
 [/CODE]
@@ -1109,6 +1164,7 @@ project.SendInfoToLog($"Декодированный результат: {result
 **Пример:**
 [CODE=csharp]
 //получить всех держателей ключей
+
 var holders = unlockApi.Holders("0x1234567890abcdef");
 foreach(var holder in holders)
 {

@@ -61,6 +61,7 @@ catch (Exception ex)
 }
 
 //или только залогировать без выброса исключения
+
 try 
 {
     DoSomething();
@@ -109,6 +110,7 @@ catch (Exception ex)
 
 [CODE=csharp]
 //проверить условие и выбросить ошибку при необходимости
+
 if (someCondition)
 {
     project.Throw("Критическая ошибка: условие не выполнено");
@@ -158,9 +160,11 @@ catch (Exception ex)
 **Пример использования:**
 [CODE=csharp]
 // создание экземпляра без логирования
+
 var fs = new FS(project);
 
 // создание экземпляра с включенным логированием
+
 var fs = new FS(project, true);
 [/CODE]
 
@@ -177,6 +181,7 @@ var fs = new FS(project, true);
 [CODE=csharp]
 var fs = new FS(project);
 //удалить директорию с файлами
+
 fs.RmRf(@"C:\temp\folder");
 [/CODE]
 
@@ -192,6 +197,7 @@ fs.RmRf(@"C:\temp\folder");
 [CODE=csharp]
 var fs = new FS(project);
 //скопировать папку с файлами
+
 fs.CopyDir(@"C:\source", @"C:\destination");
 [/CODE]
 
@@ -207,6 +213,7 @@ fs.CopyDir(@"C:\source", @"C:\destination");
 **Пример использования:**
 [CODE=csharp]
 //получить случайный файл из папки
+
 string randomFile = FS.GetRandomFile(@"C:\images");
 if (randomFile != null)
 {
@@ -227,6 +234,7 @@ if (randomFile != null)
 [CODE=csharp]
 var fs = new FS(project, true);
 //получить новый аккаунт из $"{_project.Path}.data\\fresh\\{dataType}.txt"
+
 string account = fs.GetNewCreds("twitter"); 
 if (account != null)
 {
@@ -256,9 +264,11 @@ else
 
 [CODE=csharp]
 //создание объекта Reporter
+
 var reporter = new Reporter(project, instance);
 
 //создание с дополнительными параметрами  
+
 var reporter = new Reporter(project, instance, true, "📋");
 [/CODE]
 
@@ -276,13 +286,16 @@ var reporter = new Reporter(project, instance, true, "📋");
 
 [CODE=csharp]
 //создание простого отчёта об ошибке
+
 string errorReport = reporter.ErrorReport();
 project.SendInfoToLog("Отчёт об ошибке: " + errorReport);
 
 //создание отчёта с отправкой в Telegram и скриншотом
+
 string fullReport = reporter.ErrorReport(toTg: true, screensot: true);
 
 //создание отчёта с обновлением базы данных
+
 string dbReport = reporter.ErrorReport(toDb: true);
 [/CODE]
 
@@ -297,12 +310,15 @@ string dbReport = reporter.ErrorReport(toDb: true);
 
 [CODE=csharp]
 //создание простого отчёта об успехе
+
 string successReport = reporter.SuccessReport();
 
 //создание отчёта с выводом в лог
+
 string loggedReport = reporter.SuccessReport(log: true);
 
 //создание отчёта с отправкой в Telegram
+
 string tgReport = reporter.SuccessReport(ToTg: true);
 [/CODE][/SPOILER]
 [SPOILER= Rnd]
@@ -412,6 +428,7 @@ project.SendInfoToLog($"Result: {result}"); // 50% от 1000 с уменьшен
 
 [CODE=csharp]
 // Переменная содержит "10.5-20.7"
+
 decimal randomDecimal = project.RndDecimal("myRange");
 project.SendInfoToLog($"Random decimal: {randomDecimal}");
 [/CODE]
@@ -428,6 +445,7 @@ project.SendInfoToLog($"Random decimal: {randomDecimal}");
 
 [CODE=csharp]
 // Переменная содержит "5-15"
+
 int randomInt = project.RndInt("myIntRange");
 project.SendInfoToLog($"Random integer: {randomInt}");
 [/CODE]
@@ -467,9 +485,11 @@ project.SendInfoToLog($"Random bool: {result}");
 **Пример использования:**
 [CODE=csharp]
 //отправить простое сообщение в лог
+
 project.L0g("Операция выполнена успешно");
 
 //отправить сообщение без отображения в интерфейсе
+
 project.L0g("Отладочное сообщение", show: false);
 [/CODE]
 
@@ -486,12 +506,15 @@ project.L0g("Отладочное сообщение", show: false);
 **Пример использования:**
 [CODE=csharp]
 //обработать диапазон из переменной проекта
+
 int maxRange = project.Range();
 
 //обработать конкретный диапазон
+
 int maxRange = project.Range("1-10");
 
 //обработать список аккаунтов
+
 int maxRange = project.Range("1,5,8,12");
 [/CODE]
 
@@ -504,6 +527,7 @@ int maxRange = project.Range("1,5,8,12");
 **Пример использования:**
 [CODE=csharp]
 //очистить ресурсы браузера
+
 project.Clean(instance);
 [/CODE]
 
@@ -516,6 +540,7 @@ project.Clean(instance);
 **Пример использования:**
 [CODE=csharp]
 //корректно завершить работу с аккаунтом
+
 project.Finish(instance);
 [/CODE]
 
@@ -532,6 +557,7 @@ project.Finish(instance);
 **Пример использования:**
 [CODE=csharp]
 //получить версию расширения
+
 string version = Utils.GetExtVer(@"C:\Chrome\Default\Secure Preferences", "extension_id");
 project.SendInfoToLog($"Версия расширения: {version}");
 [/CODE]
@@ -545,6 +571,7 @@ project.SendInfoToLog($"Версия расширения: {version}");
 **Пример использования:**
 [CODE=csharp]
 //предупредить об устаревшем коде
+
 project.ObsoleteCode("NewMethod.DoSomething");
 [/CODE]
 
@@ -559,9 +586,11 @@ project.ObsoleteCode("NewMethod.DoSomething");
 **Пример использования:**
 [CODE=csharp]
 //выполнить проект без передачи переменных
+
 bool result = project.RunZp();
 
 //выполнить проект с передачей переменных
+
 var varsToPass = new List<string> { "var1", "var2", "login" };
 bool result = project.RunZp(varsToPass);
 [/CODE]
