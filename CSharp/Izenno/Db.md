@@ -515,11 +515,245 @@ string stats = project.DbQ(@"
 // Результат: "active\n45\nnew\n30\nerror\n25"
 ```
 
-### ⚠️ ВАЖНЫЕ ОСОБЕННОСТИ РЕАЛИЗАЦИИ
+### 2.6 Частые сценарии использования
 
-1. **Автоматическое экранирование**: Все имена таблиц и колонок автоматически оборачиваются в кавычки
-2. **Поле last**: При DbUpd автоматически обновляется с текущим временем (можно отключить параметром last: false)
-3. **Переменная acc0**: Используется как ID текущей записи по умолчанию
-4. **Разделители в результатах**: Многострочные результаты разделяются символом \n
-5. **Защита от опасных запросов**: DROP и DELETE без WHERE автоматически блокируются
-6. **Различия PostgreSQL/SQLite**: Библиотека автоматически адаптирует SQL под нужную БД
+#### "Нужно быстро создать таблицу для нового проекта"
+
+```csharp
+// Создаем стандартную таблицу с базовыми полями
+project.Variables["projectTable"].Value = "my_accounts";
+project.Variables["cfgToDo"].Value = "register,verify,post";  // задачи проекта
+project.TblPrepareDefault();
+
+// Под капотом создастся таблица:
+// id | status | last | register | verify | post
+// И заполнится диапазоном записей согласно rangeEnd
+```
+
+#### "Хочу получить случайный неиспользованный аккаунт"
+
+```csharp
+// Ищем аккаунт без статуса 'used'
+string account = project.DbGetRandom("login,password", "accounts", acc: true);
+string[] data = account.Split('\n');
+project.Variables["acc0"].Value = data[0];  // сохраняем ID
+
+// Сразу помечаем как используемый
+project.DbUpd("status = 'in_progress'", "accounts");
+
+// После работы
+project.DbUpd("status = 'used'", "accounts");
+```
+
+#### "Нужно обработать все записи по очереди"
+
+```csharp
+// Получаем следующую необработанную запись
+string nextId = project.DbQ(@"
+    SELECT MIN(id) FROM tasks 
+    WHERE status = '' OR status IS NULL
+");
+
+if (!string.IsNullOrEmpty(nextId))
+{
+    project.Variables["acc0"].Value = nextId;
+    // Обрабатываем...
+    project.DbStatus("completed", "tasks");
+}
+else
+{
+    throw new Exception("Все задачи выполнены");
+}
+```
+
+#### "Хочу перенести данные между таблицами"
+
+```csharp
+// Копируем только нужные записи в архив
+project.DbQ(@"
+    INSERT INTO accounts_archive (id, login, password, status)
+    SELECT id, login, password, status 
+    FROM accounts 
+    WHERE status = 'banned'
+");
+
+// Удаляем перенесенные
+project.DbQ("DELETE FROM accounts WHERE status = 'banned'");
+```
+
+#### "Нужно сбросить статусы и начать заново"
+
+```csharp
+// Сбрасываем все статусы
+project.DbQ("UPDATE accounts SET status = '', last = ''");
+
+// Или только для определенных записей
+project.DbQ(@"
+    UPDATE accounts 
+    SET status = '', error_count = 0 
+    WHERE status = 'error' AND error_count < 3
+");
+```
+
+#### "Хочу найти дубликаты в таблице"
+
+```csharp
+// Находим дублирующиеся email
+string duplicates = project.DbQ(@"
+    SELECT email, COUNT(*) as cnt 
+    FROM users 
+    GROUP BY email 
+    HAVING COUNT(*) > 1
+");
+
+// Результат: "test@mail.com\n3\nadmin@site.ru\n2"
+// Означает: test@mail.com встречается 3 раза, admin@site.ru - 2 раза
+```
+
+#### "Нужно добавить новое поле во все таблицы проекта"
+
+```csharp
+// Список таблиц проекта
+string[] tables = { "accounts", "proxies", "results", "logs" };
+
+// Добавляем поле во все таблицы
+foreach (string table in tables)
+{
+    if (project.TblExist(table))
+    {
+        project.ClmnAdd("project_version", table, defaultValue: "TEXT DEFAULT 'v1.0'");
+    }
+}
+```
+
+#### "Хочу работать с JSON данными в БД"
+
+```csharp
+// Сохраняем JSON в поле
+var data = new { 
+    cookies = "cookie_string", 
+    headers = new { userAgent = "Mozilla/5.0" },
+    timestamp = DateTime.Now
+};
+string json = Global.ZennoLab.Json.JsonConvert.SerializeObject(data);
+project.DbUpd($"session_data = '{json.Replace("'", "''")}'", "accounts");
+
+// Читаем и парсим JSON
+string jsonFromDb = project.DbGet("session_data", "accounts");
+project.Json.FromString(jsonFromDb);
+string cookies = project.Json.cookies;
+```
+
+#### "Нужна статистика по проекту"
+
+```csharp
+// Общая статистика
+string stats = project.DbQ(@"
+    SELECT 
+        COUNT(*) as total,
+        COUNT(CASE WHEN status = 'success' THEN 1 END) as success,
+        COUNT(CASE WHEN status = 'error' THEN 1 END) as errors,
+        COUNT(CASE WHEN status = '' THEN 1 END) as pending
+    FROM accounts
+");
+// Результат: "100\n45\n10\n35"  (всего, успех, ошибки, ожидают)
+
+// Статистика по дням
+string daily = project.DbQ(@"
+    SELECT 
+        substr(last, 1, 5) as day,
+        COUNT(*) as processed
+    FROM accounts
+    WHERE last != ''
+    GROUP BY substr(last, 1, 5)
+    ORDER BY day DESC
+");
+```
+
+#### "База повреждена или нужно почистить"
+
+```csharp
+// Удаляем пустые записи
+project.DbQ(@"
+    DELETE FROM accounts 
+    WHERE login = '' AND password = '' AND status = ''
+");
+
+// Исправляем битые данные
+project.DbQ(@"
+    UPDATE accounts 
+    SET status = 'need_check' 
+    WHERE status NOT IN ('new', 'active', 'error', 'banned')
+");
+
+// Вакуум для SQLite (уменьшение размера файла)
+if (project.Variables["DBmode"].Value == "SQLite")
+{
+    project.DbQ("VACUUM");
+}
+```
+
+#### "Нужно мигрировать с SQLite на PostgreSQL"
+
+```csharp
+// Сначала работаем с SQLite
+project.Variables["DBmode"].Value = "SQLite";
+project.Variables["DBsqltPath"].Value = @"C:\old_database.db";
+
+// Переключаемся и мигрируем
+project.Variables["DBmode"].Value = "PostgreSQL";
+project.Variables["DBpstgrPass"].Value = "myPassword";
+project.MigrateAllTables();  // Автоматически перенесет все таблицы
+```
+
+#### "Хочу работать с зашифрованными данными"
+
+```csharp
+// Сохраняем зашифрованные ключи (если настроен cfgPin)
+project.Variables["cfgPin"].Value = "my_secret_pin";
+string encryptedKey = SAFU.Encode(project, "private_key_here");
+project.DbUpd($"wallet_key = '{encryptedKey}'", "wallets");
+
+// Читаем и расшифровываем
+string encrypted = project.DbGet("wallet_key", "wallets");
+string decrypted = SAFU.Decode(project, encrypted);  // использует cfgPin
+```
+
+### 📊 Сравнительная таблица методов
+
+| Задача | Стандартный ZennoPoster | z3nCore.Db | SQL под капотом |
+|--------|-------------------------|------------|-----------------|
+| **Получить одно значение** | `ZennoPoster.Db.ExecuteScalar("SELECT name FROM users WHERE id=1", ...)` | `project.DbGet("name", "users")` | `SELECT "name" FROM "users" WHERE "id" = {acc0}` |
+| **Обновить запись** | `ZennoPoster.Db.ExecuteNonQuery("UPDATE users SET status='active' WHERE id=1", ...)` | `project.DbUpd("status = 'active'", "users")` | `UPDATE "users" SET "status" = 'active', "last" = '{date}' WHERE "id" = {acc0}` |
+| **Случайная запись** | Нужно писать полный SQL с RANDOM() | `project.DbGetRandom("email", "users")` | `SELECT "email" FROM "users" WHERE TRIM("email") != '' ORDER BY RANDOM() LIMIT 1` |
+| **Создать таблицу** | Писать полный CREATE TABLE | `project.TblAdd(structure, "table")` | `CREATE TABLE "table" (...)` с автоматической адаптацией под БД |
+| **Добавить колонку** | `ExecuteNonQuery("ALTER TABLE ADD COLUMN...")` | `project.ClmnAdd("phone", "users")` | `ALTER TABLE "users" ADD COLUMN "phone" TEXT DEFAULT ''` |
+| **Массовое обновление** | `ExecuteNonQuery` с полным SQL | `project.SqlUpd(..., where: "age > 18")` | `UPDATE ... WHERE age > 18` |
+| **Заполнить список** | `ExecuteQuery` с ref list | `project.DbGet("name,email,phone")` разделит \n | Автоматическое форматирование результата |
+| **Проверить таблицу** | Запрос к системным таблицам | `project.TblExist("users")` | Автоматически для SQLite/PostgreSQL |
+
+### 🎯 Шпаргалка быстрых команд
+
+| Действие | Команда | Примечание |
+|----------|---------|------------|
+| **Получить данные** | `project.DbGet("field", "table")` | Использует acc0 как ID |
+| **Обновить запись** | `project.DbUpd("field = 'value'", "table")` | Автоматически обновляет last |
+| **Установить статус** | `project.DbStatus("completed", "table")` | Короткая запись для status |
+| **Случайная запись** | `project.DbGetRandom("field", "table")` | Исключает пустые значения |
+| **Прямой SQL** | `project.DbQ("SELECT * FROM table")` | Для сложных запросов |
+| **Создать таблицу** | `project.TblAdd(dict, "table")` | Dict с полями и типами |
+| **Проверить таблицу** | `project.TblExist("table")` | Возвращает bool |
+| **Добавить колонку** | `project.ClmnAdd("column", "table")` | TEXT DEFAULT '' по умолчанию |
+| **Заполнить диапазон** | `project.AddRange("table", 100)` | Создает записи 1-100 |
+| **Загрузить настройки** | `project.DbSettings()` | Из таблицы _settings |
+| **Мигрировать таблицу** | `project.MigrateTable("old", "new")` | Копирует структуру и данные |
+
+### ⚠️ Важные предупреждения
+
+1. **DbUpd** автоматически обновляет поле `last` - отключайте параметром `last: false` если не нужно
+2. **DELETE/DROP без WHERE** автоматически блокируются для защиты от случайного удаления
+3. **Переменная acc0** должна быть установлена перед вызовом DbGet/DbUpd
+4. **DbGetRandom** по умолчанию исключает пустые значения - используйте `invert: true` для поиска пустых
+5. **Разные БД** - библиотека автоматически адаптирует SQL под SQLite или PostgreSQL
+6. **Экранирование** - все имена таблиц и колонок автоматически экранируются кавычками
+7. **Результаты через \n** - многострочные результаты разделяются символом новой строки
