@@ -2,10 +2,49 @@
 
 ## Базовая настройка Git (один раз)
 
+### Глобальная настройка (для всех проектов)
 ```bash
 git config --global user.name "Ваше Имя"
 git config --global user.email "your.email@example.com"
+git config --global init.defaultBranch main
 ```
+
+### Локальная настройка (только для текущего проекта)
+```bash
+git config user.name "Другое Имя"
+git config user.email "work.email@company.com"
+```
+
+### Настройка для сессии (временно)
+```bash
+# Установить переменные окружения для текущей сессии терминала
+export GIT_AUTHOR_NAME="Временное Имя"
+export GIT_AUTHOR_EMAIL="temp.email@example.com"
+export GIT_COMMITTER_NAME="Временное Имя"
+export GIT_COMMITTER_EMAIL="temp.email@example.com"
+```
+
+### Посмотреть текущие настройки
+```bash
+# Все настройки
+git config --list
+
+# Глобальные настройки
+git config --global --list
+
+# Локальные настройки проекта
+git config --local --list
+
+# Конкретный параметр
+git config user.name
+git config user.email
+```
+
+### Приоритет настроек (от высшего к низшему)
+1. **Сессия** (переменные окружения)
+2. **Локальные** (файл `.git/config` в проекте)
+3. **Глобальные** (файл `~/.gitconfig`)
+4. **Системные** (файл `/etc/gitconfig`)
 
 ## Создание репозитория
 
@@ -128,6 +167,55 @@ git reset --hard HEAD~1
 git revert commit_hash
 ```
 
+## Управление настройками конфигурации
+
+### Удаление настроек
+```bash
+# Удалить глобальную настройку
+git config --global --unset user.name
+
+# Удалить локальную настройку
+git config --local --unset user.email
+
+# Удалить секцию настроек
+git config --global --remove-section alias
+```
+
+### Редактирование настроек в редакторе
+```bash
+# Открыть глобальный конфиг в редакторе
+git config --global --edit
+
+# Открыть локальный конфиг проекта
+git config --edit
+```
+
+### Полезные глобальные настройки
+```bash
+# Настроить редактор по умолчанию
+git config --global core.editor "code --wait"
+
+# Включить подсветку в консоли
+git config --global color.ui auto
+
+# Настроить алиасы
+git config --global alias.st status
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.unstage 'reset HEAD --'
+git config --global alias.visual '!gitk'
+```
+
+### Временная смена пользователя для коммита
+```bash
+# Сделать один коммит от другого пользователя
+git commit --author="Другой Пользователь <other@example.com>" -m "Сообщение коммита"
+
+# Или через переменные окружения
+GIT_AUTHOR_NAME="Другой Пользователь" GIT_AUTHOR_EMAIL="other@example.com" git commit -m "Сообщение"
+```
+
 ## Полезные команды для просмотра
 
 ### Найти хэш коммита
@@ -193,6 +281,17 @@ git remote -v
 4. **Pull**: VCS → Git → Pull
 5. **История**: правый клик на файле → Git → Show History
 
+### Настройка пользователя в Rider:
+
+1. **Глобальные настройки**:
+   - File → Settings → Version Control → Git
+   - Указать имя пользователя и email
+
+2. **Локальные настройки проекта**:
+   - File → Settings → Version Control → Git
+   - Поставить галочку "Use project Git config file"
+   - Указать отдельные настройки для проекта
+
 ### Откаты в Rider:
 
 1. **Отменить изменения в файле**:
@@ -240,12 +339,38 @@ git checkout -- filename.txt
 git reset --soft HEAD~1
 ```
 
+### "Нужно сменить автора коммита временно"
+```bash
+# Для одного коммита
+git commit --author="Новый Автор <new@example.com>" -m "Сообщение"
+
+# Для сессии работы
+export GIT_AUTHOR_NAME="Временный Автор"
+export GIT_AUTHOR_EMAIL="temp@example.com"
+# Все последующие коммиты будут от этого автора
+```
+
+### "Работаю над разными проектами с разными аккаунтами"
+```bash
+# В рабочем проекте
+cd work-project
+git config user.name "Рабочий Аккаунт"
+git config user.email "work@company.com"
+
+# В личном проекте
+cd personal-project
+git config user.name "Личный Аккаунт"
+git config user.email "personal@gmail.com"
+```
+
 ## ⚠️ Важные предупреждения
 
 1. **`git reset --hard`** удаляет ВСЕ несохраненные изменения безвозвратно
 2. Всегда делайте `git status` перед операциями
 3. Если работаете с удаленным репозиторием, будьте осторожны с `reset` после `push`
 4. Регулярно делайте коммиты - это ваши точки сохранения
+5. Локальные настройки переопределяют глобальные
+6. Переменные окружения переопределяют все остальные настройки
 
 ## Шпаргалка команд
 
@@ -258,3 +383,8 @@ git reset --soft HEAD~1
 | Отменить изменения | `git checkout -- .` |
 | Откат к коммиту | `git reset --hard commit_hash` |
 | Посмотреть коммит | `git show commit_hash` |
+| Глобальные настройки | `git config --global --list` |
+| Локальные настройки | `git config --local --list` |
+| Установить пользователя глобально | `git config --global user.name "Имя"` |
+| Установить пользователя локально | `git config user.name "Имя"` |
+| Временная смена автора | `git commit --author="Автор <email>" -m "msg"` |
