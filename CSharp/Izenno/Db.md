@@ -1,7 +1,7 @@
 ## ЧАСТЬ 1: СТАНДАРТНЫЕ МЕТОДЫ ZENNOPOSTER
 
 ### 1.1 Встроенные методы работы с БД
-
+Off Docs: https://help.zennolab.com/en/v7/zennoposter/7.1.4/webframe.html#topic873.html
 ZennoPoster предоставляет набор стандартных методов для работы с базами данных через класс `ZennoPoster.Db`:
 
 ```csharp
