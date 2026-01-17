@@ -256,19 +256,57 @@ git merge feature-name
 git branch -d feature-name
 ```
 
-## Работа с удаленным репозиторием
-
-```bash
-# Отправить изменения
-git push origin main
-
-# Получить изменения
-git pull origin main
-
-# Посмотреть удаленные репозитории
+Ситуация 1: У вас уже есть локальный проект, нужно привязать к GitHub/GitLab
+```bash Посмотреть текущие удаленные репозитории (если есть)
 git remote -v
+
+### Добавить удаленный репозиторий
+git remote add origin https://github.com/username/repository.git
+
+### Проверить, что добавилось
+git remote -v
+
+### Отправить код в первый раз
+git push -u origin main
+### или
+git push -u origin master
+```
+Ситуация 2: Изменить URL существующего удаленного репозитория
+```bash Если нужно изменить адрес origin
+git remote set-url origin https://github.com/username/new-repository.git
+
+### Проверить
+git remote -v
+Ситуация 3: Удалить привязку к удаленному репозиторию
+bashgit remote remove origin
+Ситуация 4: Несколько удаленных репозиториев
+bash# Добавить второй удаленный репозиторий
+git remote add backup https://gitlab.com/username/repository.git
+
+### Теперь можно пушить в разные места
+git push origin main      # в GitHub
+git push backup main      # в GitLab
 ```
 
+Типичный сценарий с нуля:
+```bash 1. Создаете проект локально
+mkdir my-project
+cd my-project
+git init
+
+### 2. Делаете первый коммит
+git add .
+git commit -m "Initial commit"
+
+### 3. Создаете репозиторий на GitHub (через браузер)
+
+### 4. Привязываете удаленный репозиторий
+git remote add origin https://github.com/username/my-project.git
+
+### 5. Отправляете код
+git push -u origin main
+Флаг -u (или --set-upstream) нужен только в первый раз — он создает связь между локальной и удаленной веткой. После этого можно просто писать git push.
+```
 ## Работа в JetBrains Rider
 
 ### Основные операции через GUI:
@@ -387,3 +425,6 @@ git config user.email "personal@gmail.com"
 | Установить пользователя локально | `git config user.name "Имя"` |
 | Временная смена автора | `git commit --author="Автор <email>" -m "msg"` |
 | Запушить все что есть одной строкой | `git add . && git commit -m "update" && git push origin master` |
+
+| применить .gitignore | `git rm -r --cached . && git add . && git commit -m "Apply .gitignore"` | Bash
+| применить .gitignore | `git rm -r --cached . ; git add . ; git commit -m "Apply .gitignore"` | PowerShell
