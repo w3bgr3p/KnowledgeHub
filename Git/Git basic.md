@@ -425,6 +425,5 @@ git config user.email "personal@gmail.com"
 | Установить пользователя локально | `git config user.name "Имя"` |
 | Временная смена автора | `git commit --author="Автор <email>" -m "msg"` |
 | Запушить все что есть одной строкой | `git add . && git commit -m "update" && git push origin master` |
-
-| применить .gitignore | `git rm -r --cached . && git add . && git commit -m "Apply .gitignore"` | Bash
-| применить .gitignore | `git rm -r --cached . ; git add . ; git commit -m "Apply .gitignore"` | PowerShell
+| применить .gitignore Bash | `git rm -r --cached . && git add . && git commit -m "Apply .gitignore"` | 
+| применить .gitignore PowerShell | `git rm -r --cached . ; git add . ; git commit -m "Apply .gitignore"` | 
