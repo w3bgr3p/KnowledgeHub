@@ -520,7 +520,6 @@ string response = ZennoPoster.HTTP.Request(
 );
 ```
 
-
 ### Система глобальных флагов управления
 ```csharp
 // Инициализация флагов управления
