@@ -1,10 +1,10 @@
-# Работа с переменными проекта в ZennoPoster 
+# Работа с переменными проекта в ZennoPoster
 
 
 ### ⚠️ Переменные должны быть созданы заранее
 - **Все переменные должны быть созданы в ProjectMaker до выполнения кода**
 - Попытка доступа к несуществующей переменной вызовет исключение
-- API `IZennoPosterProjectModel` позволяет только читать и изменять существующие переменные, но НЕ создавать новые
+- API `IZennoPosterProjectModel` позволяет только читать и изменять существующие локальные переменные, но НЕ создавать новые
 
 ### ⚠️ Тип данных переменных
 - **Все переменные в ZennoPoster имеют тип `string`**
@@ -16,13 +16,13 @@
 
 ### Получение значения переменной
 ```csharp
-// Базовое получение значения
+// Базовое получение значения (переменная должна существовать!)
 string userName = project.Variables["UserName"].Value;
-
-// Получение с проверкой на null/пустое значение
 string email = project.Variables["Email"].Value;
+
+// Проверка на пустое значение (если переменная существует)
 if (string.IsNullOrEmpty(email)) {
-    project.SendWarningToLog("Переменная Email не задана или пуста", false);
+    project.SendWarningToLog("Переменная Email пуста", false);
 }
 ```
 
@@ -31,14 +31,22 @@ if (string.IsNullOrEmpty(email)) {
 // Установка строкового значения
 project.Variables["UserName"].Value = "ivan_petrov";
 
-// Установка числового значения (конвертация в string)
-project.Variables["Age"].Value = "25";
+// Установка числа - конвертация в string
+int age = 25;
+project.Variables["Age"].Value = age.ToString();
 
-// Установка булевого значения
-project.Variables["IsLoggedIn"].Value = "True";
+// Установка булевого значения - конвертация в string
+bool isLoggedIn = true;
+project.Variables["IsLoggedIn"].Value = isLoggedIn.ToString();
 
 // Установка текущей даты и времени
 project.Variables["CurrentDateTime"].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+// Универсальный код
+var someObject = object;
+project.Variables["object"].Value = $"{someObject}";
+
+
 ```
 
 ## 🔢 РАБОТА С ЧИСЛОВЫМИ ДАННЫМИ
@@ -47,39 +55,30 @@ project.Variables["CurrentDateTime"].Value = DateTime.Now.ToString("yyyy-MM-dd H
 ```csharp
 // Получение числового значения из переменной
 string countStr = project.Variables["Count"].Value;
-int count = 0;
-if (int.TryParse(countStr, out count)) {
-    // Успешная конвертация
-    count++;
-    project.Variables["Count"].Value = count.ToString();
-} else {
-    // Ошибка конвертации, устанавливаем значение по умолчанию
-    project.Variables["Count"].Value = "1";
-    project.SendWarningToLog($"Не удалось преобразовать '{countStr}' в число, установлено значение 1", false);
-}
+int count = int.Parse(countStr);
+count++;
+project.Variables["Count"].Value = count.ToString();
 
 // Работа с double
 string priceStr = project.Variables["Price"].Value;
-double price = 0.0;
-if (double.TryParse(priceStr, out price)) {
-    price *= 1.2; // Увеличиваем цену на 20%
-    project.Variables["Price"].Value = price.ToString("F2"); // Форматируем до 2 знаков после запятой
-}
+double price = double.Parse(priceStr);
+price *= 1.2; // Увеличиваем цену на 20%
+project.Variables["Price"].Value = price.ToString("F2"); // Форматируем до 2 знаков после запятой
 ```
 
 ### Арифметические операции
 ```csharp
 // Инкремент счетчика
 string attemptStr = project.Variables["Attempts"].Value;
-int attempts = int.TryParse(attemptStr, out int temp) ? temp : 0;
+int attempts = int.Parse(attemptStr);
 attempts++;
 project.Variables["Attempts"].Value = attempts.ToString();
 
 // Вычисление суммы
 string sum1Str = project.Variables["Sum1"].Value;
 string sum2Str = project.Variables["Sum2"].Value;
-int sum1 = int.TryParse(sum1Str, out int s1) ? s1 : 0;
-int sum2 = int.TryParse(sum2Str, out int s2) ? s2 : 0;
+int sum1 = int.Parse(sum1Str);
+int sum2 = int.Parse(sum2Str);
 int total = sum1 + sum2;
 project.Variables["TotalSum"].Value = total.ToString();
 ```
@@ -128,7 +127,7 @@ project.Variables["HasErrors"].Value = "False";
 
 // Проверка булевого значения
 string isLoggedInStr = project.Variables["IsLoggedIn"].Value;
-bool isLoggedIn = isLoggedInStr == "True" || isLoggedInStr.ToLower() == "True";
+bool isLoggedIn = isLoggedInStr == "True";
 
 if (isLoggedIn) {
     // Пользователь авторизован
@@ -141,7 +140,7 @@ if (isLoggedIn) {
 // Переключение булевого значения
 string currentState = project.Variables["FeatureEnabled"].Value;
 bool isEnabled = currentState == "True";
-project.Variables["FeatureEnabled"].Value = (!isEnabled).ToString().ToLower();
+project.Variables["FeatureEnabled"].Value = (!isEnabled).ToString();
 ```
 
 ## 📅 РАБОТА С ДАТОЙ И ВРЕМЕНЕМ
@@ -169,18 +168,17 @@ project.Variables["Timestamp"].Value = ((DateTimeOffset)DateTime.Now).ToUnixTime
 ```csharp
 // Добавление дней к дате
 string currentDateStr = project.Variables["StartDate"].Value;
-if (DateTime.TryParse(currentDateStr, out DateTime startDate)) {
-    DateTime endDate = startDate.AddDays(30);
-    project.Variables["EndDate"].Value = endDate.ToString("yyyy-MM-dd");
-}
+DateTime startDate = DateTime.Parse(currentDateStr);
+DateTime endDate = startDate.AddDays(30);
+project.Variables["EndDate"].Value = endDate.ToString("yyyy-MM-dd");
 
 // Вычисление разности между датами
 string date1Str = project.Variables["Date1"].Value;
 string date2Str = project.Variables["Date2"].Value;
-if (DateTime.TryParse(date1Str, out DateTime date1) && DateTime.TryParse(date2Str, out DateTime date2)) {
-    TimeSpan difference = date2 - date1;
-    project.Variables["DaysDifference"].Value = difference.Days.ToString();
-}
+DateTime date1 = DateTime.Parse(date1Str);
+DateTime date2 = DateTime.Parse(date2Str);
+TimeSpan difference = date2 - date1;
+project.Variables["DaysDifference"].Value = difference.Days.ToString();
 ```
 
 ## 🌐 РАБОТА С URL И ПУТЯМИ
@@ -203,11 +201,10 @@ project.Variables["EncodedQuery"].Value = encodedQuery;
 ```csharp
 // Извлечение домена из URL
 string fullUrl = project.Variables["FullUrl"].Value;
-if (Uri.TryCreate(fullUrl, UriKind.Absolute, out Uri uri)) {
-    project.Variables["Domain"].Value = uri.Host;
-    project.Variables["Path"].Value = uri.AbsolutePath;
-    project.Variables["Query"].Value = uri.Query;
-}
+Uri uri = new Uri(fullUrl);
+project.Variables["Domain"].Value = uri.Host;
+project.Variables["Path"].Value = uri.AbsolutePath;
+project.Variables["Query"].Value = uri.Query;
 ```
 
 ## 🔍 УСЛОВНАЯ ЛОГИКА С ПЕРЕМЕННЫМИ
@@ -263,7 +260,7 @@ project.Variables["ActionResult"].Value = result;
 ```csharp
 // Получаем текущее количество попыток
 string attemptsStr = project.Variables["LoginAttempts"].Value;
-int attempts = int.TryParse(attemptsStr, out int temp) ? temp : 0;
+int attempts = int.Parse(attemptsStr);
 
 // Увеличиваем счетчик
 attempts++;
@@ -313,28 +310,28 @@ if (!string.IsNullOrEmpty(emailListStr)) {
 // Проверка email
 string email = project.Variables["Email"].Value;
 bool isValidEmail = !string.IsNullOrEmpty(email) && email.Contains("@") && email.Contains(".");
-project.Variables["IsValidEmail"].Value = isValidEmail.ToString().ToLower();
+project.Variables["IsValidEmail"].Value = isValidEmail.ToString();
 
 // Проверка телефона (простая)
 string phone = project.Variables["Phone"].Value;
-bool isValidPhone = !string.IsNullOrEmpty(phone) && phone.Length >= 10 && phone.All(char.IsDigit);
-project.Variables["IsValidPhone"].Value = isValidPhone.ToString().ToLower();
+bool isValidPhone = !string.IsNullOrEmpty(phone) && phone.Length >= 10;
+project.Variables["IsValidPhone"].Value = isValidPhone.ToString();
 
 // Комплексная валидация
 bool allValid = isValidEmail && isValidPhone;
-project.Variables["AllFieldsValid"].Value = allValid.ToString().ToLower();
+project.Variables["AllFieldsValid"].Value = allValid.ToString();
 ```
 
 ## ⚡ ОПТИМИЗАЦИЯ И ЛУЧШИЕ ПРАКТИКИ
 
 ### Избегание повторных обращений
 ```csharp
-// ❌ Плохо - два поиска в коллекции дороже создания ссылки
+// ❌ Плохо - множественные обращения к одной переменной
 if (project.Variables["Status"].Value == "processing") {
     project.SendInfoToLog($"Статус: {project.Variables["Status"].Value}", false);
 }
 
-// ✅ Хорошо - один поиск + консистентность данных
+// ✅ Хорошо - одно обращение
 string status = project.Variables["Status"].Value;
 if (status == "processing") {
     project.SendInfoToLog($"Статус: {status}", false);
@@ -355,46 +352,28 @@ if (string.IsNullOrEmpty(status)) {
 }
 ```
 
-### Централизованная обработка ошибок
-```csharp
-// Функция для безопасного получения числовой переменной
-int GetIntVariable(string variableName, int defaultValue = 0) {
-    string valueStr = project.Variables[variableName].Value;
-    if (int.TryParse(valueStr, out int result)) {
-        return result;
-    } else {
-        project.Variables[variableName].Value = defaultValue.ToString();
-        return defaultValue;
-    }
-}
-
-// Использование
-int attempts = GetIntVariable("Attempts", 0);
-int maxRetries = GetIntVariable("MaxRetries", 5);
-```
-
 ## 🚨 ОБРАБОТКА ОШИБОК
 
-### Безопасная работа с переменными
+### Безопасная работа с переменными (EAFP подход)
 ```csharp
+// EAFP - Easier to Ask for Forgiveness than Permission
 try {
-    // Попытка доступа к переменной
-    string value = project.Variables["SomeVariable"].Value;
-    
-    // Обработка значения
-    if (!string.IsNullOrEmpty(value)) {
-        project.Variables["ProcessedValue"].Value = value.ToUpper();
-    }
+    // Пытаемся получить и обработать переменную
+    string valueStr = project.Variables["Count"].Value;
+    int value = int.Parse(valueStr);
+    value++;
+    project.Variables["Count"].Value = value.ToString();
     
 } catch (Exception ex) {
-    project.SendErrorToLog($"Ошибка при работе с переменной: {ex.Message}", false);
+    // Если что-то пошло не так - обрабатываем ошибку
+    project.SendErrorToLog($"Ошибка при работе с переменной Count: {ex.Message}", false);
     
-    // Установка безопасного значения по умолчанию
-    project.Variables["ProcessedValue"].Value = "DEFAULT_VALUE";
+    // Устанавливаем безопасное значение по умолчанию
+    project.Variables["Count"].Value = "1";
 }
 ```
 
-### Проверка существования переменной через try-catch
+### Проверка существования переменной
 ```csharp
 // Функция для проверки существования переменной
 bool VariableExists(string variableName) {
@@ -411,7 +390,7 @@ if (VariableExists("OptionalSetting")) {
     string setting = project.Variables["OptionalSetting"].Value;
     // Работаем с переменной
 } else {
-    project.SendInfoToLog($"Переменная OptionalSetting не найдена", false);
+    project.SendInfoToLog("Переменная OptionalSetting не найдена", false);
 }
 ```
 
@@ -433,7 +412,7 @@ IGlobalVariable gv = project.GlobalVariables["MyNamespace", "VariableName"];
 // Получение значения
 string value = gv.Value.ToString();
 
-// Более безопасное получение с проверкой на null
+// Безопасное получение с проверкой на null
 IGlobalVariable gv = project.GlobalVariables["Settings", "ApiKey"];
 if (gv != null && gv.Value != null) {
     string apiKey = gv.Value.ToString();
@@ -460,18 +439,14 @@ project.GlobalVariables.SetVariable("Timing", "LastUpdate", DateTime.Now.ToStrin
 // Получаем переменную и изменяем её значение
 IGlobalVariable counter = project.GlobalVariables["Counters", "TotalProcessed"];
 if (counter != null) {
-    int currentValue = 0;
-    if (int.TryParse(counter.Value.ToString(), out currentValue)) {
-        currentValue++;
-        counter.Value = currentValue.ToString();
-    } else {
-        counter.Value = "1";
-    }
+    int currentValue = int.Parse(counter.Value.ToString());
+    currentValue++;
+    counter.Value = currentValue.ToString();
 }
 
 // Более короткий способ через SetVariable (перезапишет существующую)
 string currentCountStr = project.GlobalVariables["Counters", "TotalProcessed"]?.Value?.ToString() ?? "0";
-int currentCount = int.TryParse(currentCountStr, out int temp) ? temp : 0;
+int currentCount = int.Parse(currentCountStr);
 currentCount++;
 project.GlobalVariables.SetVariable("Counters", "TotalProcessed", currentCount.ToString());
 ```
@@ -506,7 +481,7 @@ project.GlobalVariables.SetVariable("Statistics", "ProcessedItems", "0");
 IGlobalVariable counter = project.GlobalVariables["Statistics", "ProcessedItems"];
 if (counter != null) {
     lock (counter) {
-        int current = int.TryParse(counter.Value.ToString(), out int temp) ? temp : 0;
+        int current = int.Parse(counter.Value.ToString());
         current++;
         counter.Value = current.ToString();
         
@@ -532,7 +507,7 @@ string apiUrl = project.GlobalVariables["Config", "ApiUrl"]?.Value?.ToString() ?
 string timeoutStr = project.GlobalVariables["Config", "Timeout"]?.Value?.ToString() ?? "30";
 string userAgent = project.GlobalVariables["Config", "UserAgent"]?.Value?.ToString() ?? "DefaultUA";
 
-int timeout = int.TryParse(timeoutStr, out int t) ? t * 1000 : 30000;
+int timeout = int.Parse(timeoutStr) * 1000;
 
 // Использование в HTTP запросе
 string response = ZennoPoster.HTTP.Request(
@@ -584,9 +559,8 @@ string tokenExpiry = project.GlobalVariables["Cache", "TokenExpiry"]?.Value?.ToS
 
 bool needNewToken = string.IsNullOrEmpty(cachedToken);
 if (!string.IsNullOrEmpty(tokenExpiry)) {
-    if (DateTime.TryParse(tokenExpiry, out DateTime expiry)) {
-        needNewToken = DateTime.Now >= expiry;
-    }
+    DateTime expiry = DateTime.Parse(tokenExpiry);
+    needNewToken = DateTime.Now >= expiry;
 }
 
 if (needNewToken) {
@@ -628,7 +602,7 @@ void UpdateStats(bool isSuccess) {
     IGlobalVariable totalVar = project.GlobalVariables["Stats", "TotalRequests"];
     if (totalVar != null) {
         lock (totalVar) {
-            int total = int.TryParse(totalVar.Value.ToString(), out int temp) ? temp : 0;
+            int total = int.Parse(totalVar.Value.ToString());
             total++;
             totalVar.Value = total.ToString();
         }
@@ -639,7 +613,7 @@ void UpdateStats(bool isSuccess) {
     IGlobalVariable statVar = project.GlobalVariables["Stats", statType];
     if (statVar != null) {
         lock (statVar) {
-            int count = int.TryParse(statVar.Value.ToString(), out int temp) ? temp : 0;
+            int count = int.Parse(statVar.Value.ToString());
             count++;
             statVar.Value = count.ToString();
         }
@@ -670,7 +644,7 @@ project.SendInfoToLog($"Статистика: Всего={total}, Успешно
 IGlobalVariable sharedCounter = project.GlobalVariables["Shared", "Counter"];
 if (sharedCounter != null) {
     lock (sharedCounter) {
-        int current = int.TryParse(sharedCounter.Value.ToString(), out int temp) ? temp : 0;
+        int current = int.Parse(sharedCounter.Value.ToString());
         current++;
         sharedCounter.Value = current.ToString();
         
@@ -688,8 +662,8 @@ if (var1 != null && var2 != null) {
     lock (var1) {
         lock (var2) {
             // Атомарная операция с двумя переменными
-            int val1 = int.TryParse(var1.Value.ToString(), out int temp1) ? temp1 : 0;
-            int val2 = int.TryParse(var2.Value.ToString(), out int temp2) ? temp2 : 0;
+            int val1 = int.Parse(var1.Value.ToString());
+            int val2 = int.Parse(var2.Value.ToString());
             
             val1++;
             val2 += val1;
