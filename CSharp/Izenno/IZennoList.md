@@ -1,446 +1,458 @@
+# Работа со списками проекта (IZennoList) в ZennoPoster
 
+## 🔴 ВАЖНЫЕ ОГРАНИЧЕНИЯ И ОСОБЕННОСТИ
 
-### Методическое пособие по работе с IZennoList в ZennoPoster
-`IZennoList` используется для работы со списками в ZennoPoster, которые представляют собой коллекции строк, синхронизированные с файлами проекта. Все элементы списков — строки, и для потокобезопасности в многопоточных сценариях рекомендуется использовать `lock()`.
+### ⚠️ Списки должны быть созданы заранее
+- Все списки должны быть созданы в ProjectMaker до выполнения кода
+- Попытка доступа к несуществующему списку вызовет исключение
 
-**Важные замечания:**
-- `IZennoList` поддерживает ограниченный набор методов: `Add`, `AddRange`, `RemoveAt`, `Clear`, `Bind`, `GetItem`, `GetItems`. Дополнительные операции (например, сортировка, поиск) выполняйте через временные списки .NET (`List<string>`).
-- Списки проекта привязаны к файлам, поэтому операции добавления/удаления требуют осторожности в многопоточных сценариях.
-- Все значения в `IZennoList` — строки. Нестроковые данные конвертируются в строку.
-- Логирование ошибок и действий используйте только при необходимости: `project.SendInfoToLog`, `project.SendWarningToLog`, `project.SendErrorToLog`.
+### ⚠️ Связь с внешними файлами
+- Списки могут быть привязаны к внешним файлам (txt, csv)
+- Изменения в коде автоматически сохраняются в файл
+- При работе с файловыми списками `lock()` обязателен для предотвращения повреждения файла
 
-#### 1. Получение объекта IZennoList
-Списки проекта доступны через коллекцию `project.Lists`.
+### ⚠️ Потокобезопасность
+- **Обычные списки** (созданные в ProjectMaker без привязки к файлу) - потокобезопасны, `lock()` не нужен
+- **Файловые списки** (привязанные через Bind к внешнему файлу) - требуют `lock()` для всех операций
 
+## 📋 ОСНОВНЫЕ СВОЙСТВА И МЕТОДЫ
+
+### Свойства
 ```csharp
-IZennoList list = project.Lists["ИмяСписка"];
-```
-
-- **Описание:** Возвращает объект `IZennoList` для указанного имени списка. Если список не существует, ZennoPoster может создать его автоматически.
-- **Пример:**
-  ```csharp
-  IZennoList myList = project.Lists["MyList"];
-  ```
-- **Потокобезопасность:** Используйте `lock(list)` для операций в многопоточной среде.
-- **Ошибки:** Если список недоступен, оберните в `try-catch`:
-  ```csharp
-  try {
-      IZennoList list = project.Lists["MyList"];
-  } catch (Exception ex) {
-      project.SendErrorToLog($"Ошибка получения списка: {ex.Message}", false);
-  }
-  ```
-
-#### 2. Методы IZennoList
-Ниже описаны все методы интерфейса `IZennoList`, найденные в предоставленных сигнатурах.
-
-##### 2.1. Add (Добавление элемента)
-Добавляет элемент в конец списка.
-
-```csharp
-list.Add("новый элемент");
-```
-
-- **Параметры:** Элемент (тип: `object`, но ожидается строка или конвертируемое в строку значение).
-- **Описание:** Добавляет элемент в конец списка. Нестроковые данные автоматически преобразуются в строку. Изменения сохраняются в файл списка.
-- **Пример:**
-  ```csharp
-  IZennoList list = project.Lists["MyList"];
-  list.Add("Элемент1");
-  list.Add(123); // Конвертируется в "123"
-  list.Add(project.Variables["VarName"].Value);
-  ```
-- **Потокобезопасность:**
-  ```csharp
-  lock(list) {
-      list.Add("Элемент");
-  }
-  ```
-- **Ошибки:** Если файл списка заблокирован, может выбросить исключение:
-  ```csharp
-  try {
-      list.Add("Элемент");
-      project.SendInfoToLog("Элемент добавлен", false);
-  } catch (Exception ex) {
-      project.SendErrorToLog($"Ошибка добавления: {ex.Message}", false);
-  }
-  ```
-
-##### 2.2. AddRange (Добавление коллекции элементов)
-Добавляет элементы из коллекции в список. Есть два варианта метода.
-
-###### 2.2.1. AddRange(IEnumerable<string>)
-Добавляет элементы из коллекции .NET, реализующей `IEnumerable<string>`.
-
-```csharp
-List<string> tempList = new List<string> { "Элемент1", "Элемент2" };
-list.AddRange(tempList);
-```
-
-- **Параметры:** Коллекция строк (тип: `IEnumerable<string>`).
-- **Описание:** Добавляет все элементы из коллекции в конец списка. Элементы должны быть строками.
-- **Пример:**
-  ```csharp
-  IZennoList list = project.Lists["MyList"];
-  List<string> tempList = new List<string> { "Элемент1", "Элемент2", "Элемент3" };
-  lock(list) {
-      list.AddRange(tempList);
-      project.SendInfoToLog($"Добавлено {tempList.Count} элементов", false);
-  }
-  ```
-- **Ошибки:** Если коллекция пустая или файл заблокирован, может выбросить исключение:
-  ```csharp
-  try {
-      List<string> tempList = new List<string> { "Элемент1", "Элемент2" };
-      lock(list) {
-          list.AddRange(tempList);
-      }
-  } catch (Exception ex) {
-      project.SendErrorToLog($"Ошибка AddRange: {ex.Message}", false);
-  }
-  ```
-
-###### 2.2.2. AddRange(IZennoList)
-Добавляет все элементы из другого `IZennoList`.
-
-```csharp
-IZennoList sourceList = project.Lists["SourceList"];
-list.AddRange(sourceList);
-```
-
-- **Параметры:** Другой список `IZennoList`.
-- **Описание:** Копирует все элементы из исходного `IZennoList` в целевой список.
-- **Пример:**
-  ```csharp
-  IZennoList sourceList = project.Lists["SourceList"];
-  IZennoList targetList = project.Lists["TargetList"];
-  lock(targetList) {
-      targetList.AddRange(sourceList);
-      project.SendInfoToLog("Элементы скопированы из SourceList", false);
-  }
-  ```
-- **Потокобезопасность:** Используйте `lock` для обоих списков:
-  ```csharp
-  lock(targetList) {
-      lock(sourceList) {
-          targetList.AddRange(sourceList);
-      }
-  }
-  ```
-- **Ошибки:** Проверяйте доступность списков:
-  ```csharp
-  try {
-      lock(targetList) {
-          targetList.AddRange(sourceList);
-      }
-  } catch (Exception ex) {
-      project.SendErrorToLog($"Ошибка копирования списка: {ex.Message}", false);
-  }
-  ```
-
-##### 2.3. RemoveAt (Удаление элемента по индексу)
-Удаляет элемент по указанному индексу.
-
-```csharp
-list.RemoveAt(0);
-```
-
-- **Параметры:** Индекс элемента (тип: `int`, начиная с 0).
-- **Описание:** Удаляет элемент по индексу. Изменения сохраняются в файл списка.
-- **Пример:**
-  ```csharp
-  IZennoList list = project.Lists["MyList"];
-  try {
-      if (list.Count > 0) { // Проверка (если Count доступен)
-          lock(list) {
-              list.RemoveAt(0);
-              project.SendInfoToLog("Первый элемент удален", false);
-          }
-      }
-  } catch (Exception ex) {
-      project.SendErrorToLog($"Ошибка удаления: {ex.Message}", false);
-  }
-  ```
-- **Ошибки:** Проверяйте индекс:
-  ```csharp
-  if (list.Count <= index) {
-      project.SendWarningToLog("Недопустимый индекс", false);
-  }
-  ```
-
-##### 2.4. Clear (Очистка списка)
-Очищает весь список.
-
-```csharp
-list.Clear();
-```
-
-- **Параметры:** Нет.
-- **Описание:** Удаляет все элементы из списка. Файл списка очищается.
-- **Пример:**
-  ```csharp
-  IZennoList list = project.Lists["MyList"];
-  try {
-      lock(list) {
-          list.Clear();
-          project.SendInfoToLog("Список очищен", false);
-      }
-  } catch (Exception ex) {
-      project.SendErrorToLog($"Ошибка очистки: {ex.Message}", false);
-  }
-  ```
-
-##### 2.5. Bind (Привязка списка к файлу)
-Привязывает список к текстовому файлу.
-
-```csharp
-list.Bind("C:\\mylist.txt");
-```
-
-- **Параметры:** Путь к файлу (тип: `string`).
-- **Описание:** Связывает список с файлом. Содержимое файла загружается в список, а изменения списка синхронизируются с файлом.
-- **Пример:**
-  ```csharp
-  IZennoList list = project.Lists["MyList"];
-  string filePath = Path.Combine(project.Directory, "mylist.txt");
-  try {
-      lock(list) {
-          list.Bind(filePath);
-          project.SendInfoToLog($"Список привязан к {filePath}", false);
-      }
-  } catch (Exception ex) {
-      project.SendErrorToLog($"Ошибка привязки: {ex.Message}", false);
-  }
-  ```
-- **Ошибки:** Проверяйте доступность файла:
-  ```csharp
-  if (!File.Exists(filePath)) {
-      project.SendWarningToLog("Файл не существует, будет создан", false);
-  }
-  ```
-
-##### 2.6. GetItem (Получение элемента)
-Получает элемент по указанному индексу или случайный элемент.
-
-```csharp
-string item = list.GetItem("0", false); // Получить первый элемент
-string randomItem = list.GetItem("random", true); // Получить случайный элемент и удалить
-```
-
-- **Параметры:**
-  - `indexOrRandom`: Индекс (строка, например, `"0"`) или `"random"` для случайного элемента.
-  - `remove`: Если `true`, элемент удаляется после получения.
-- **Описание:** Возвращает строку из списка. Может удалить элемент при получении.
-- **Пример:**
-  ```csharp
-  IZennoList list = project.Lists["MyList"];
-  try {
-      lock(list) {
-          string item = list.GetItem("0", false);
-          if (!string.IsNullOrEmpty(item)) {
-              project.SendInfoToLog($"Получен элемент: {item}", false);
-          }
-          string randomItem = list.GetItem("random", true);
-          if (!string.IsNullOrEmpty(randomItem)) {
-              project.SendInfoToLog($"Случайный элемент: {randomItem}", false);
-          }
-      }
-  } catch (Exception ex) {
-      project.SendErrorToLog($"Ошибка получения элемента: {ex.Message}", false);
-  }
-  ```
-- **Ошибки:** Если список пуст или индекс неверный, возвращается пустая строка или выбросится исключение.
-
-##### 2.7. GetItems (Получение нескольких элементов)
-Получает несколько элементов по диапазону или случайным образом.
-
-```csharp
-string[] items = list.GetItems("0-2", false); // Получить первые три элемента
-string[] randomItems = list.GetItems("3", true); // Получить три случайных элемента с удалением
-```
-
-- **Параметры:**
-  - `rangeOrCount`: Диапазон (например, `"0-2"`) или количество случайных элементов (например, `"3"`).
-  - `remove`: Если `true`, элементы удаляются после получения.
-- **Описание:** Возвращает массив строк из списка. Поддерживает диапазоны или случайный выбор.
-- **Пример:**
-  ```csharp
-  IZennoList list = project.Lists["MyList"];
-  try {
-      lock(list) {
-          string[] items = list.GetItems("0-2", false);
-          project.SendInfoToLog($"Получено {items.Length} элементов", false);
-      }
-  } catch (Exception ex) {
-      project.SendErrorToLog($"Ошибка получения элементов: {ex.Message}", false);
-  }
-  ```
-- **Ошибки:** Проверяйте диапазон и наличие элементов.
-
-#### 3. Связанные методы из других классов
-
-##### 3.1. Macros.TextProcessing.ToList
-Конвертирует строку в список.
-
-```csharp
-Macros.TextProcessing.ToList(source, rowSplitter, rowType, project, list);
-```
-
-- **Параметры:**
-  - `source`: Исходная строка.
-  - `rowSplitter`: Разделитель строк (например, `";"`).
-  - `rowType`: Тип разделения (`"Text"` или `"Regex"`).
-  - `project`: Объект проекта.
-  - `list`: Целевой `IZennoList`.
-- **Пример:**
-  ```csharp
-  string data = "Элемент1;Элемент2;Элемент3";
-  IZennoList list = project.Lists["MyList"];
-  try {
-      lock(list) {
-          Macros.TextProcessing.ToList(data, ";", "Text", project, list);
-          project.SendInfoToLog("Список заполнен из строки", false);
-      }
-  } catch (Exception ex) {
-      project.SendErrorToLog($"Ошибка заполнения: {ex.Message}", false);
-  }
-  ```
-
-##### 3.2. ZennoPoster.Db.ExecuteQuery
-Выполняет SQL-запрос к базе данных и возвращает результат в `IZennoList`.
-
-```csharp
-OrderedDictionary parameters = new OrderedDictionary();
-parameters.Add("param1", "value1");
-IZennoList resultList = project.Lists["ResultList"];
-ZennoPoster.Db.ExecuteQuery("SELECT * FROM table WHERE column = :param1", parameters, ZennoLab.InterfacesLibrary.Enums.Db.DbProvider.SQLite, "path_to_db.db", out resultList, "column_name", false);
-```
-
-- **Параметры:**
-  - `query`: SQL-запрос.
-  - `parameters`: Параметры запроса (`OrderedDictionary`).
-  - `dbProvider`: Тип базы данных (например, `SQLite`).
-  - `dbPath`: Путь к базе данных.
-  - `resultList`: Выходной `IZennoList` (передается как `out`).
-  - `columnName`: Имя столбца для извлечения данных.
-  - `distinct`: Если `true`, возвращаются только уникальные значения.
-- **Пример:**
-  ```csharp
-  IZennoList resultList = project.Lists["ResultList"];
-  OrderedDictionary parameters = new OrderedDictionary();
-  parameters.Add("id", "1");
-  try {
-      lock(resultList) {
-          ZennoPoster.Db.ExecuteQuery("SELECT name FROM users WHERE id = :id", parameters, ZennoLab.InterfacesLibrary.Enums.Db.DbProvider.SQLite, Path.Combine(project.Directory, "db.sqlite"), out resultList, "name", true);
-          project.SendInfoToLog($"Получено {resultList.Count} записей", false);
-      }
-  } catch (Exception ex) {
-      project.SendErrorToLog($"Ошибка запроса: {ex.Message}", false);
-  }
-  ```
-
-##### 3.3. IInstanceManagerService.DbExecuteQuery
-Аналогичен `ZennoPoster.Db.ExecuteQuery`, но вызывается через `instance`.
-
-```csharp
-OrderedDictionary parameters = new OrderedDictionary();
-parameters.Add("param1", "value1");
-IZennoList resultList = project.Lists["ResultList"];
-instance.DbExecuteQuery("SELECT * FROM table WHERE column = :param1", parameters, ZennoLab.InterfacesLibrary.Enums.Db.DbProvider.SQLite, "path_to_db.db", out resultList, "column_name", false);
-```
-
-- **Описание:** Выполняет SQL-запрос через менеджер экземпляров.
-- **Пример:** Аналогичен предыдущему, но использует `instance` вместо `ZennoPoster`.
-
-#### 4. Рекомендации по работе с IZennoList
-- **Потокобезопасность:** Всегда используйте `lock(list)` для операций в многопоточных сценариях.
-- **Проверка данных:** Проверяйте входные данные перед добавлением:
-  ```csharp
-  if (!string.IsNullOrEmpty(item)) {
-      lock(list) {
-          list.Add(item);
-      }
-  }
-  ```
-- **Ошибки:** Оборачивайте все операции в `try-catch` и логируйте:
-  ```csharp
-  try {
-      lock(list) {
-          list.Add("Элемент");
-      }
-  } catch (Exception ex) {
-      project.SendErrorToLog($"Ошибка: {ex.Message}", false);
-  }
-  ```
-- **Производительность:** Для сложных операций (сортировка, фильтрация) используйте `List<string>`:
-  ```csharp
-  List<string> tempList = new List<string>();
-  tempList.AddRange(list.GetItems("all", false));
-  tempList.Sort();
-  lock(list) {
-      list.Clear();
-      list.AddRange(tempList);
-  }
-  ```
-- **Работа с файлами:** После `Bind` проверяйте доступность файла:
-  ```csharp
-  string filePath = Path.Combine(project.Directory, "mylist.txt");
-  if (!File.Exists(filePath)) {
-      File.WriteAllText(filePath, "");
-  }
-  ```
-
-#### 5. Комплексный пример
-Сценарий: загрузка данных из файла, обработка, запрос к базе данных и сохранение в `IZennoList`.
-
-```csharp
-string filePath = Path.Combine(project.Directory, "mylist.txt");
 IZennoList list = project.Lists["MyList"];
-try {
-    // Привязка к файлу
-    lock(list) {
-        list.Bind(filePath);
-        project.SendInfoToLog("Список привязан к файлу", false);
-    }
 
-    // Загрузка строк из файла
-    string[] lines = FileSystem.FileGetLines(filePath, "all", false);
-    List<string> tempList = new List<string>();
-    foreach (string line in lines) {
-        string trimmed = Macros.TextProcessing.Trim(line, "Full");
-        if (!string.IsNullOrEmpty(trimmed)) {
-            tempList.Add(trimmed);
-        }
-    }
+// Получение количества элементов
+int count = list.Count;
+project.SendInfoToLog($"В списке {count} элементов", false);
 
-    // Добавление в список
-    lock(list) {
-        list.Clear();
-        list.AddRange(tempList);
-        project.SendInfoToLog($"Добавлено {tempList.Count} элементов", false);
-    }
+// Проверка на только для чтения
+bool isReadOnly = list.IsReadOnly;
 
-    // Запрос к базе данных
-    OrderedDictionary parameters = new OrderedDictionary();
-    parameters.Add("id", "1");
-    IZennoList dbList = project.Lists["DbResults"];
-    lock(dbList) {
-        ZennoPoster.Db.ExecuteQuery("SELECT name FROM users WHERE id = :id", parameters, ZennoLab.InterfacesLibrary.Enums.Db.DbProvider.SQLite, Path.Combine(project.Directory, "db.sqlite"), out dbList, "name", true);
-        project.SendInfoToLog($"Получено {dbList.Count} записей из БД", false);
-    }
+// Получение элемента по индексу
+string item = list[0];
+string lastItem = list[list.Count - 1];
 
-    // Получение и обработка элемента
-    lock(list) {
-        string item = list.GetItem("0", false);
-        if (!string.IsNullOrEmpty(item)) {
-            project.Variables["Result"].Value = item;
-            project.SendInfoToLog($"Получен элемент: {item}", false);
-        }
-    }
-} catch (Exception ex) {
-    project.SendErrorToLog($"Ошибка: {ex.Message}", false);
+// Установка элемента по индексу
+list[0] = "новое значение";
+```
+
+### Добавление элементов
+
+#### Add - добавление одного элемента
+```csharp
+IZennoList userList = project.Lists["Users"];
+
+// Простое добавление
+userList.Add("ivan_petrov");
+userList.Add("maria_sidorova");
+
+// Добавление с формированием данных
+string userId = "12345";
+string email = "user@example.com";
+string userData = $"{userId}|{email}";
+userList.Add(userData);
+```
+
+#### AddRange - добавление нескольких элементов
+```csharp
+IZennoList targetList = project.Lists["Target"];
+
+// Из обычного списка
+List<string> tempList = new List<string>();
+tempList.Add("элемент1");
+tempList.Add("элемент2");
+tempList.Add("элемент3");
+targetList.AddRange(tempList);
+
+// Из другого IZennoList
+IZennoList sourceList = project.Lists["Source"];
+targetList.AddRange(sourceList);
+```
+
+### Получение элементов
+
+#### Прямой доступ по индексу
+```csharp
+IZennoList list = project.Lists["MyList"];
+
+// Получение элемента
+if (list.Count > 0) {
+    string first = list[0];
+    string last = list[list.Count - 1];
+    
+    project.SendInfoToLog($"Первый: {first}", false);
+    project.SendInfoToLog($"Последний: {last}", false);
+}
+
+// Безопасное получение с проверкой
+int index = 5;
+if (index >= 0 && index < list.Count) {
+    string item = list[index];
+    project.SendInfoToLog($"Элемент [{index}]: {item}", false);
 }
 ```
 
----
+#### GetItem - получение с удалением
+```csharp
+IZennoList queue = project.Lists["Queue"];
 
+// Получение первого элемента без удаления
+string item = queue.GetItem("0", false);
+
+// Получение первого элемента с удалением
+string nextItem = queue.GetItem("0", true);
+
+// Получение случайного элемента с удалением
+string randomItem = queue.GetItem("random", true);
+
+// Проверка результата
+if (!string.IsNullOrEmpty(nextItem)) {
+    project.SendInfoToLog($"Обработка: {nextItem}", false);
+}
+```
+
+#### GetItems - получение нескольких элементов
+```csharp
+IZennoList batch = project.Lists["Batch"];
+
+// Получение диапазона элементов (0, 1, 2)
+string[] items = batch.GetItems("0-2", false);
+
+// Получение первых 5 элементов с удалением
+string[] firstFive = batch.GetItems("0-4", true);
+
+// Получение 3 случайных элементов
+string[] randomThree = batch.GetItems("3", true);
+
+// Обработка результата
+foreach (string item in items) {
+    project.SendInfoToLog($"Элемент: {item}", false);
+}
+```
+
+### Удаление элементов
+
+#### RemoveAt - удаление по индексу
+```csharp
+IZennoList processing = project.Lists["Processing"];
+
+// Удаление первого элемента
+if (processing.Count > 0) {
+    processing.RemoveAt(0);
+}
+
+// Удаление последнего элемента
+if (processing.Count > 0) {
+    processing.RemoveAt(processing.Count - 1);
+}
+
+// Удаление нескольких элементов с конца
+int toRemove = 5;
+for (int i = 0; i < toRemove && processing.Count > 0; i++) {
+    processing.RemoveAt(processing.Count - 1);
+}
+```
+
+#### Remove - удаление по значению
+```csharp
+IZennoList items = project.Lists["Items"];
+
+// Удаление конкретного значения
+string valueToRemove = "completed_task";
+if (items.Contains(valueToRemove)) {
+    items.Remove(valueToRemove);
+}
+```
+
+#### Clear - полная очистка
+```csharp
+IZennoList temp = project.Lists["Temp"];
+temp.Clear();
+project.SendInfoToLog($"Список очищен. Размер: {temp.Count}", false);
+```
+
+### Поиск и проверка
+
+#### Contains - проверка наличия элемента
+```csharp
+IZennoList users = project.Lists["Users"];
+
+string newUser = "user_123";
+if (!users.Contains(newUser)) {
+    users.Add(newUser);
+} else {
+    project.SendInfoToLog($"Пользователь {newUser} уже существует", false);
+}
+```
+
+#### IndexOf - поиск индекса элемента
+```csharp
+IZennoList items = project.Lists["Items"];
+
+string searchItem = "target_value";
+int index = items.IndexOf(searchItem);
+
+if (index >= 0) {
+    project.SendInfoToLog($"Найден на позиции: {index}", false);
+} else {
+    project.SendInfoToLog("Элемент не найден", false);
+}
+```
+
+### Insert - вставка по индексу
+```csharp
+IZennoList list = project.Lists["MyList"];
+
+// Вставка в начало
+list.Insert(0, "новый_первый");
+
+// Вставка в середину
+if (list.Count >= 5) {
+    list.Insert(5, "вставка_в_середину");
+}
+```
+
+### CopyTo - копирование в массив
+```csharp
+IZennoList source = project.Lists["Source"];
+
+// Создание массива нужного размера
+string[] array = new string[source.Count];
+
+// Копирование всех элементов
+source.CopyTo(array, 0);
+
+// Использование скопированных данных
+foreach (string item in array) {
+    project.SendInfoToLog(item, false);
+}
+```
+
+### Bind - привязка к файлу
+```csharp
+IZennoList list = project.Lists["FileList"];
+
+// Привязка к файлу
+string filePath = Path.Combine(project.Directory, "data.txt");
+list.Bind(filePath);
+
+// После привязки все операции требуют lock()
+lock (list) {
+    list.Add("новая_строка");
+}
+
+project.SendInfoToLog($"Список привязан к {filePath}", false);
+```
+
+## 🔒 ПОТОКОБЕЗОПАСНАЯ РАБОТА
+
+### Когда нужен lock()
+
+#### Файловые списки - ВСЕГДА используйте lock()
+```csharp
+IZennoList fileList = project.Lists["FileList"];
+string filePath = Path.Combine(project.Directory, "data.txt");
+fileList.Bind(filePath);
+
+// Все операции с файловым списком
+lock (fileList) {
+    fileList.Add("данные");
+    string item = fileList[0];
+    fileList.RemoveAt(0);
+}
+```
+
+#### Обычные списки - lock() НЕ нужен
+```csharp
+IZennoList normalList = project.Lists["NormalList"];
+
+// Операции без lock() - потокобезопасно
+normalList.Add("элемент");
+string item = normalList[0];
+normalList.RemoveAt(0);
+```
+
+### Правильная синхронизация
+```csharp
+IZennoList fileList = project.Lists["FileList"];
+
+// Подготовка данных ВНЕ блокировки
+string processedData = ProcessData();
+
+// Быстрая операция В блокировке
+lock (fileList) {
+    fileList.Add(processedData);
+}
+
+// Неправильно - долгая операция в lock
+lock (fileList) {
+    Thread.Sleep(5000); // ❌ Блокирует другие потоки
+    fileList.Add("data");
+}
+```
+
+## 📊 ПРАКТИЧЕСКИЕ ПРИМЕРЫ
+
+### Очередь задач (обычный список)
+```csharp
+IZennoList tasks = project.Lists["Tasks"];
+
+// Добавление задачи
+tasks.Add("новая_задача");
+
+// Получение следующей задачи
+string nextTask = "";
+if (tasks.Count > 0) {
+    nextTask = tasks[0];
+    tasks.RemoveAt(0);
+}
+
+if (!string.IsNullOrEmpty(nextTask)) {
+    project.SendInfoToLog($"Выполняю: {nextTask}", false);
+}
+```
+
+### Пул прокси (файловый список)
+```csharp
+IZennoList proxies = project.Lists["Proxies"];
+string proxyFile = Path.Combine(project.Directory, "proxies.txt");
+proxies.Bind(proxyFile);
+
+// Получение прокси
+string proxy = "";
+lock (proxies) {
+    if (proxies.Count > 0) {
+        proxy = proxies[0];
+        proxies.RemoveAt(0);
+    }
+}
+
+// Использование прокси
+if (!string.IsNullOrEmpty(proxy)) {
+    // Работа с прокси
+}
+
+// Возврат прокси
+lock (proxies) {
+    proxies.Add(proxy);
+}
+```
+
+### Накопление результатов (обычный список)
+```csharp
+IZennoList results = project.Lists["Results"];
+
+// Добавление результата
+string result = "обработанные_данные";
+results.Add(result);
+
+// Обработка батча при достижении размера
+if (results.Count >= 100) {
+    // Копирование для обработки
+    string[] batch = new string[results.Count];
+    results.CopyTo(batch, 0);
+    
+    // Очистка основного списка
+    results.Clear();
+    
+    // Обработка батча
+    foreach (string item in batch) {
+        // Обработка
+    }
+}
+```
+
+### Система логирования (обычный список)
+```csharp
+IZennoList log = project.Lists["ActionLog"];
+
+// Добавление записи
+string logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}|login|success";
+log.Add(logEntry);
+
+// Ограничение размера лога
+if (log.Count > 1000) {
+    log.RemoveAt(0);
+}
+
+// Поиск ошибок
+int errorCount = 0;
+for (int i = 0; i < log.Count; i++) {
+    if (log[i].Contains("|error") || log[i].Contains("|failed")) {
+        errorCount++;
+    }
+}
+project.SendInfoToLog($"Найдено ошибок: {errorCount}", false);
+```
+
+### Работа со структурированными данными
+```csharp
+IZennoList users = project.Lists["Users"];
+
+// Добавление профиля
+string userId = "123";
+string email = "user@mail.com";
+string name = "Иван";
+string profile = $"{userId}|{email}|{name}";
+users.Add(profile);
+
+// Получение и парсинг
+string userData = users[0];
+string[] parts = userData.Split('|');
+if (parts.Length >= 3) {
+    string id = parts[0];
+    string userEmail = parts[1];
+    string userName = parts[2];
+    
+    project.SendInfoToLog($"ID: {id}, Email: {userEmail}, Имя: {userName}", false);
+}
+```
+
+### Перебор всех элементов
+```csharp
+IZennoList items = project.Lists["Items"];
+
+// Через цикл for
+for (int i = 0; i < items.Count; i++) {
+    string item = items[i];
+    project.SendInfoToLog($"[{i}]: {item}", false);
+}
+
+// Через GetEnumerator
+foreach (string item in items) {
+    project.SendInfoToLog(item, false);
+}
+```
+
+## 💡 СОВЕТЫ И РЕКОМЕНДАЦИИ
+
+### Производительность
+- `RemoveAt(index)` быстрее чем `Remove(value)` - не требует поиска
+- `Contains()` медленный для больших списков - проходит весь список
+- Для сложных операций копируйте в `List<string>` и работайте с ним
+
+### Безопасность
+- Всегда проверяйте `Count` перед доступом по индексу
+- Используйте `lock()` для файловых списков
+- Проверяйте результат `GetItem()` и `GetItems()` на пустоту
+
+### Типичные ошибки
+```csharp
+// ❌ Неправильно - нет проверки
+string item = list[0];
+
+// ✅ Правильно
+if (list.Count > 0) {
+    string item = list[0];
+}
+
+// ❌ Неправильно - изменение во время перебора
+foreach (string item in list) {
+    list.Remove(item); // Исключение!
+}
+
+// ✅ Правильно - копирование или обратный проход
+for (int i = list.Count - 1; i >= 0; i--) {
+    list.RemoveAt(i);
+}
+```
