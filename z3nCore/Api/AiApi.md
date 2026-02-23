@@ -17,7 +17,6 @@
 Пример:
 ```csharp
 var ai = new AI(project, "perplexity", "llama-3.3-70b", true);
-project.SendInfoToLog("AI клиент создан с провайдером Perplexity", false);
 ```
 
 ## Публичные методы
@@ -37,7 +36,6 @@ project.SendInfoToLog("AI клиент создан с провайдером Pe
 string systemPrompt = "Ты помощник по программированию";
 string userQuery = "Объясни что такое циклы в C#";
 string response = ai.Query(systemPrompt, userQuery, "deepseek-ai/DeepSeek-R1-0528");
-project.SendInfoToLog($"Ответ AI: {response}", false);
 ```
 
 **GenerateTweet(string content, string bio = "", bool log = false)**
@@ -54,7 +52,6 @@ project.SendInfoToLog($"Ответ AI: {response}", false);
 string tweetContent = "Новости из мира криптовалют";
 string accountBio = "Криптоэнтузиаст и блокчейн-разработчик";
 string tweet = ai.GenerateTweet(tweetContent, accountBio);
-project.SendInfoToLog($"Сгенерирован твит: {tweet}", false);
 ```
 
 **OptimizeCode(string content, bool log = false)**
@@ -69,7 +66,6 @@ project.SendInfoToLog($"Сгенерирован твит: {tweet}", false);
 ```csharp
 string originalCode = "function transfer(address, amount) { /* неоптимальный код */ }";
 string optimizedCode = ai.OptimizeCode(originalCode, true);
-project.SendInfoToLog("Код оптимизирован", false);
 ```
 
 **GoogleAppeal(bool log = false)**
@@ -82,6 +78,5 @@ project.SendInfoToLog("Код оптимизирован", false);
 Пример:
 ```csharp
 string appealMessage = ai.GoogleAppeal();
-project.SendInfoToLog($"Обращение в Google: {appealMessage}", false);
 //отправить сообщение в форму поддержки
 ```
